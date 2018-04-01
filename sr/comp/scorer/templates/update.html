@@ -37,7 +37,7 @@
     <foreignObject x="{{ x }}" y="{{ y }}" width="70" height="30">
         <label for="tokens_{{ corner }}">Tokens</label>
     </foreignObject>
-    <foreignObject x="{{ x + 75 }}" y="{{ y }}" width="120" height="30">
+    <foreignObject x="{{ x + 75 }}" y="{{ y }}" width="150" height="30">
         <input type="text" id="tokens_{{ corner }}" name="tokens_{{ corner }}" value="{{ request.form.get('tokens_{}'.format(corner)) | empty_if_none }}" onkeyup="token_input_change(this);" />
     </foreignObject>
 {% endmacro %}
@@ -52,10 +52,10 @@
 {% endmacro %}
 
 {% macro input_moved(x, y, corner) %}
-    <foreignObject x="{{ x }}" y="{{ y }}" width="80" height="30">
+    <foreignObject x="{{ x }}" y="{{ y }}" width="180" height="30">
         <label for="moved_{{ corner }}">Left starting zone</label>
     </foreignObject>
-    <foreignObject x="{{ x + 85 }}" y="{{ y }}" width="30" height="30">
+    <foreignObject x="{{ x + 185 }}" y="{{ y }}" width="30" height="30">
         <input type="checkbox" id="moved_{{ corner }}" name="moved_{{ corner }}" value="on" {{ 'checked' if request.form.get('moved_{}'.format(corner)) else '' }} />
     </foreignObject>
 {% endmacro %}
@@ -94,32 +94,32 @@
                 </g>
 
                 <!-- Zone 0 -->
-                {{ input_tla(110, 70, 0) }}
-                {{ input_tokens(60, 120, 0) }}
-                {{ input_present(80, 170, 0) }}
-                {{ input_moved(80, 190, 0) }}
-                {{ input_disqualified(35, 220, 0) }}
+                {{ input_tla(70, 70, 0) }}
+                {{ input_tokens(40, 120, 0) }}
+                {{ input_present(120, 170, 0) }}
+                {{ input_moved(20, 200, 0) }}
+                {{ input_disqualified(80, 230, 0) }}
 
                 <!-- Zone 1 -->
-                {{ input_tla(345, 70, 1) }}
-                {{ input_tokens(355, 120, 1) }}
-                {{ input_present(405, 170, 1) }}
-                {{ input_moved(405, 190, 1) }}
-                {{ input_disqualified(410, 220, 1) }}
+                {{ input_tla(370, 70, 1) }}
+                {{ input_tokens(340, 120, 1) }}
+                {{ input_present(420, 170, 1) }}
+                {{ input_moved(320, 200, 1) }}
+                {{ input_disqualified(380, 230, 1) }}
 
                 <!-- Zone 2 -->
-                {{ input_tla(425, 350, 2) }}
-                {{ input_tokens(370, 400, 2) }}
-                {{ input_present(385, 450, 2) }}
-                {{ input_moved(385, 470, 2) }}
-                {{ input_disqualified(335, 500, 2) }}
+                {{ input_tla(370, 350, 2) }}
+                {{ input_tokens(340, 400, 2) }}
+                {{ input_present(420, 450, 2) }}
+                {{ input_moved(320, 480, 2) }}
+                {{ input_disqualified(380, 510, 2) }}
 
                 <!-- Zone 3 -->
-                {{ input_tla(30, 350, 3) }}
-                {{ input_tokens(45, 400, 3) }}
-                {{ input_present(100, 450, 3) }}
-                {{ input_moved(100, 470, 3) }}
-                {{ input_disqualified(110, 500, 3) }}
+                {{ input_tla(70, 350, 3) }}
+                {{ input_tokens(40, 400, 3) }}
+                {{ input_present(120, 450, 3) }}
+                {{ input_moved(20, 480, 3) }}
+                {{ input_disqualified(80, 510, 3) }}
 
                 <!-- Bottom -->
                 {{ input_tokens(200, 618, 'other') }}
