@@ -74,6 +74,8 @@ def form_to_score(match, form):
                 'present':
                     form.get('present_{}'.format(zone), None) is not None,
                 'events': form.get('events_{}'.format(zone), ''),
+                'holding-super':
+                    form.get('holding_super_{}'.format(zone), None) is not None,
             }
 
             teams[tla] = team
@@ -100,6 +102,7 @@ def score_to_form(score):
         form['disqualified_{}'.format(i)] = info.get('disqualified', False)
         form['present_{}'.format(i)] = info.get('present', True)
         form['events_{}'.format(i)] = info['events'].upper()
+        form['holding_super_{}'.format(i)] = info.get('holding-super', False)
 
     return form
 
@@ -114,6 +117,7 @@ def match_to_form(match):
             form['present_{}'.format(i)] = False
 
         form['events_{}'.format(i)] = ''
+        form['holding_super_{}'.format(i)] = False
 
     form['events'] = ''
 

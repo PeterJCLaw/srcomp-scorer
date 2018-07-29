@@ -42,6 +42,15 @@
     </foreignObject>
 {% endmacro %}
 
+{% macro input_holding_super(x, y, corner) %}
+    <foreignObject x="{{ x }}" y="{{ y }}" width="150" height="30">
+        <label for="holding_super_{{ corner }}">Holiding Super</label>
+    </foreignObject>
+    <foreignObject x="{{ x + 155 }}" y="{{ y }}" width="30" height="30">
+        <input type="checkbox" id="holding_super_{{ corner }}" name="holding_super_{{ corner }}" value="on" {{ 'checked' if request.form.get('holding_super_{}'.format(corner)) else '' }} />
+    </foreignObject>
+{% endmacro %}
+
 {% macro input_present(x, y, corner) %}
     <foreignObject x="{{ x }}" y="{{ y }}" width="80" height="30">
         <label for="present_{{ corner }}">Present</label>
@@ -71,26 +80,28 @@
         <h1>{{ match['type'].value | title }} scores for {{ match['display_name'] }} in Arena {{ arenas[match['arena']].display_name }}</h1>
 
         <form method="POST">
-            <svg xmlns="http://www.w3.org/2000/svg" height="600" width="600" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <rect height="600" width="600" stroke="#000" y="0" x="0" stroke-width="2" fill="#f4f3ff"/>
-                <path d="M0 300 H 600" stroke="#000" stroke-width="1"/>
+            <svg xmlns="http://www.w3.org/2000/svg" height="700" width="600" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <rect height="700" width="600" stroke="#000" y="0" x="0" stroke-width="2" fill="#f4f3ff"/>
+                <path d="M0 350 H 600" stroke="#000" stroke-width="1"/>
 
                 <g font-size="2.5em" fill="#4d4d4d" transform="scale(0.75 0.75)">
                     <text><tspan y="50" x="225" stroke="{{ corners[0].colour }}">Zone 0</tspan></text>
-                    <text><tspan y="450" x="225" stroke="{{ corners[1].colour }}">Zone 1</tspan></text>
+                    <text><tspan y="517" x="225" stroke="{{ corners[1].colour }}">Zone 1</tspan></text>
                 </g>
 
                 <!-- Zone 0 -->
-                {{ input_tla(110, 70, 0) }}
-                {{ input_events(80, 120, 0) }}
-                {{ input_present(80, 170, 0) }}
-                {{ input_disqualified(35, 220, 0) }}
+                {{ input_tla(120, 70, 0) }}
+                {{ input_events(90, 120, 0) }}
+                {{ input_holding_super(10, 170, 0) }}
+                {{ input_present(80, 220, 0) }}
+                {{ input_disqualified(40, 270, 0) }}
 
                 <!-- Zone 1 -->
-                {{ input_tla(110, 370, 1) }}
-                {{ input_events(80, 420, 1) }}
-                {{ input_present(80, 470, 1) }}
-                {{ input_disqualified(35, 520, 1) }}
+                {{ input_tla(120, 420, 1) }}
+                {{ input_events(90, 470, 1) }}
+                {{ input_holding_super(10, 520, 1) }}
+                {{ input_present(80, 570, 1) }}
+                {{ input_disqualified(40, 620, 1) }}
             </svg>
 
             <input type="hidden" name="force" />
