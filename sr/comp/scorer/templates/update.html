@@ -72,8 +72,10 @@
             {{ match['type'].value | title }}
             scores for
             {{ match['display_name'] }}
-            in Arena
-            {{ arenas[match['arena']].display_name }}
+            {% if arenas|length > 1 %}
+                in Arena
+                {{ arenas[match['arena']].display_name }}
+            {% endif %}
         </h1>
 
         <form method="POST">
