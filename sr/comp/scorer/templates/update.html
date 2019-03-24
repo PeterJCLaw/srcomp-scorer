@@ -37,7 +37,7 @@
     <foreignObject x="{{ x }}" y="{{ y }}" width="100" height="30">
         <input
             type="text"
-            class="wide-spaced"
+            class="wide-spaced tokens"
             id="tokens_{{ id }}"
             name="tokens_{{ id }}"
             placeholder="Tokens"
@@ -241,9 +241,9 @@
 
         var token_input_change = function(input) {
             input.value = input.value.toUpperCase();
-            validate_input(input);
+            validate_token_input(input);
         };
-        var validate_input = function(input) {
+        var validate_token_input = function(input) {
             if (input.value.match(valid_token_regex)) {
                 input.className = '';
             } else {
@@ -251,9 +251,9 @@
             }
         };
 
-        var textInputs = document.querySelectorAll('input[type=text]');
-        for (var i = 0; i < textInputs.length; i++) {
-            validate_input(textInputs[i]);
+        var tokenInputs = document.querySelectorAll('input[type=text].tokens');
+        for (var i = 0; i < tokenInputs.length; i++) {
+            validate_token_input(tokenInputs[i]);
         }
     </script>
 {% endblock %}
