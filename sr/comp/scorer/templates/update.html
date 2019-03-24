@@ -38,7 +38,7 @@
         <label for="tokens_{{ corner }}">Tokens</label>
     </foreignObject>
     <foreignObject x="{{ x + 75 }}" y="{{ y }}" width="120" height="30">
-        <input type="text" id="tokens_{{ corner }}" name="tokens_{{ corner }}" value="{{ request.form.get('tokens_{}'.format(corner)) | empty_if_none }}" onkeyup="token_input_change(this);" />
+        <input class="tokens" type="text" id="tokens_{{ corner }}" name="tokens_{{ corner }}" value="{{ request.form.get('tokens_{}'.format(corner)) | empty_if_none }}" onkeyup="token_input_change(this);" />
     </foreignObject>
 {% endmacro %}
 
@@ -200,9 +200,9 @@
             }
         };
 
-        var textInputs = document.querySelectorAll('input[type=text]');
-        for (var i = 0; i < textInputs.length; i++) {
-            validate_token_input(textInputs[i]);
+        var tokenInputs = document.querySelectorAll('input[type=text].tokens');
+        for (var i = 0; i < tokenInputs.length; i++) {
+            validate_token_input(tokenInputs[i]);
         }
     </script>
 {% endblock %}
