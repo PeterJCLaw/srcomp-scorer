@@ -190,9 +190,9 @@
 
         var token_input_change = function(input) {
             input.value = input.value.toUpperCase();
-            validate_input(input);
+            validate_token_input(input);
         };
-        var validate_input = function(input) {
+        var validate_token_input = function(input) {
             if (input.value.match(valid_token_regex)) {
                 input.className = '';
             } else {
@@ -202,7 +202,7 @@
 
         var textInputs = document.querySelectorAll('input[type=text]');
         for (var i = 0; i < textInputs.length; i++) {
-            validate_input(textInputs[i]);
+            validate_token_input(textInputs[i]);
         }
     </script>
 {% endblock %}
