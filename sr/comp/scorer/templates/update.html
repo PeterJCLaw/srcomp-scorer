@@ -48,11 +48,12 @@
     <foreignObject x="{{ x }}" y="{{ y + 50 }}" width="100" height="30">
         <input
             type="text"
+            class="robot-tlas"
             id="robot_tlas_{{ id }}"
             name="robot_tlas_{{ id }}"
             placeholder="Robot TLAs"
             value="{{ request.form.get('robot_tlas_{}'.format(id)) | empty_if_none }}"
-            onkeyup="token_input_change(this);"
+            onkeyup="robot_tla_input_change(this);"
         />
     </foreignObject>
 {% endmacro %}
@@ -254,6 +255,33 @@
         var tokenInputs = document.querySelectorAll('input[type=text].tokens');
         for (var i = 0; i < tokenInputs.length; i++) {
             validate_token_input(tokenInputs[i]);
+        }
+
+        var valid_robot_tlas = [
+            {% for tla, team in teams | dictsort %}
+                '{{ tla }}'{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        var robot_tla_input_change = function(input) {
+            input.value = input.value.toUpperCase();
+            validate_robot_tla_input(input);
+        };
+        var validate_robot_tla_input = function(input) {
+            var parts = input.value.split(' ').filter(function(x){ return x; });
+            for (var i=0; i<parts.length; i++) {
+                if (valid_robot_tlas.indexOf(parts[i]) !== -1) {
+                    input.className = '';
+                } else {
+                    input.className = 'invalid';
+                    break;
+                }
+            }
+        };
+
+        var robotTlaInputs = document.querySelectorAll('input[type=text].robot-tlas');
+        for (var i = 0; i < robotTlaInputs.length; i++) {
+            validate_robot_tla_input(robotTlaInputs[i]);
         }
     </script>
 {% endblock %}
