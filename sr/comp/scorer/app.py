@@ -83,16 +83,17 @@ def form_to_score(match, form):
     for i in zone_ids:
         form_team_to_score(i, teams)
 
-    zones = list(zone_ids) + ['other']
-    arena = {}
-    for zone in zones:
-        arena[zone] = { 'tokens': form.get('tokens_{}'.format(zone), '') }
+    zone_contents = [[{} for _ in range(5)] for _ in range(5)]
+    for i, row in enumerate(zone_contents):
+        for j, cell in enumerate(row):
+            cell['tokens'] = form.get('tokens_{}_{}'.format(i, j), '')
+            cell['robots'] = form.get('robot_tlas_{}_{}'.format(i, j), '').split()
 
     return {
         'arena_id': match.arena,
         'match_number': match.num,
         'teams': teams,
-        'arena_zones': arena,
+        'arena_zones': {'other': {'zone_contents': zone_contents}},
     }
 
 
@@ -105,8 +106,10 @@ def score_to_form(score):
         form['disqualified_{}'.format(i)] = info.get('disqualified', False)
         form['present_{}'.format(i)] = info.get('present', True)
 
-    for zone, info in score['arena_zones'].items():
-        form['tokens_{}'.format(zone)] = info['tokens'].upper()
+    for i, row in enumerate(score['arena_zones']['other']['zone_contents']):
+        for j, cell in enumerate(row):
+            form['tokens_{}_{}'.format(i, j)] = cell['tokens']
+            form['robot_tlas_{}_{}'.format(i, j)] = ' '.join(cell['robots'])
 
     return form
 
@@ -120,7 +123,10 @@ def match_to_form(match):
             form['disqualified_{}'.format(i)] = False
             form['present_{}'.format(i)] = False
 
-        form['tokens_{}'.format(i)] = ''
+    for row in range(5):
+        for col in range(5):
+            form['tokens_{}_{}'.format(row, col)] = ''
+            form['robot_tlas_{}_{}'.format(row, col)] = ''
 
     form['tokens'] = ''
 
