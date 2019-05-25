@@ -1,0 +1,7 @@
+# Required for deployment
+git+https://github.com/PeterJCLaw/ranker
+git+https://github.com/PeterJCLaw/srcomp
+
+
+# Not strictly required, but very useful
+git+https://github.com/PeterJCLaw/libproton
