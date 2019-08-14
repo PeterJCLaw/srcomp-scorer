@@ -63,6 +63,9 @@ app.jinja_env.globals.update(is_match_done=is_match_done)
 
 
 def form_to_score(match, form):
+    def get_tokens(key):
+        tokens_str = form.get(key, '')
+        return int(tokens_str) if tokens_str else 0
 
     def form_team_to_score(zone, teams):
         tla = form.get('tla_{}'.format(zone), None)
@@ -73,9 +76,16 @@ def form_to_score(match, form):
                     form.get('disqualified_{}'.format(zone), None) is not None,
                 'present':
                     form.get('present_{}'.format(zone), None) is not None,
+                'tokens_held': get_tokens('tokens_held_{}'.format(zone)),
             }
 
             teams[tla] = team
+
+    def form_zone_to_score(zone):
+        return {
+            'tokens_ground': get_tokens('tokens_ground_{}'.format(zone)),
+            'tokens_platform': get_tokens('tokens_platform_{}'.format(zone)),
+        }
 
     zone_ids = range(len(match.teams))
 
@@ -83,17 +93,14 @@ def form_to_score(match, form):
     for i in zone_ids:
         form_team_to_score(i, teams)
 
-    zone_contents = [[{} for _ in range(5)] for _ in range(5)]
-    for i, row in enumerate(zone_contents):
-        for j, cell in enumerate(row):
-            cell['tokens'] = form.get('tokens_{}_{}'.format(i, j), '')
-            cell['robots'] = form.get('robot_tlas_{}_{}'.format(i, j), '').split()
+    arena_zones = {i: form_zone_to_score(i) for i in zone_ids}
 
     return {
         'arena_id': match.arena,
         'match_number': match.num,
         'teams': teams,
-        'arena_zones': {'other': {'zone_contents': zone_contents}},
+        'arena_zones': arena_zones,
+        'other': {'tokens_ground': get_tokens('tokens_elsewhere')},
     }
 
 
@@ -105,11 +112,13 @@ def score_to_form(score):
         form['tla_{}'.format(i)] = tla
         form['disqualified_{}'.format(i)] = info.get('disqualified', False)
         form['present_{}'.format(i)] = info.get('present', True)
+        form['tokens_held_{}'.format(i)] = info.get('tokens_held')
 
-    for i, row in enumerate(score['arena_zones']['other']['zone_contents']):
-        for j, cell in enumerate(row):
-            form['tokens_{}_{}'.format(i, j)] = cell['tokens']
-            form['robot_tlas_{}_{}'.format(i, j)] = ' '.join(cell['robots'])
+    for zone, info in score['arena_zones'].items():
+        form['tokens_ground_{}'.format(zone)] = info.get('tokens_ground')
+        form['tokens_platform_{}'.format(zone)] = info.get('tokens_platform')
+
+    form['tokens_elsewhere'] = score.get('other', {}).get('tokens_ground')
 
     return form
 
@@ -122,13 +131,12 @@ def match_to_form(match):
             form['tla_{}'.format(i)] = tla
             form['disqualified_{}'.format(i)] = False
             form['present_{}'.format(i)] = False
+            form['tokens_held_{}'.format(i)] = None
 
-    for row in range(5):
-        for col in range(5):
-            form['tokens_{}_{}'.format(row, col)] = ''
-            form['robot_tlas_{}_{}'.format(row, col)] = ''
+        form['tokens_ground_{}'.format(i)] = None
+        form['tokens_platform_{}'.format(i)] = None
 
-    form['tokens'] = ''
+    form['tokens_elsewhere'] = None
 
     return form
 
