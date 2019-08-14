@@ -33,27 +33,36 @@
     </foreignObject>
 {% endmacro %}
 
-{% macro input_zone(x, y, id) %}
-    <foreignObject x="{{ x }}" y="{{ y }}" width="100" height="30">
+{% macro input_tokens_ground(x, y, id) %}
+    <foreignObject x="{{ x + 8 }}" y="{{ y - 15 }}" width="80" height="30">
+        <label for="tokens_ground_{{ id }}" title="Tokens on the ground in a scoring zone">Tokens</label>
+    </foreignObject>
+    <foreignObject x="{{ x }}" y="{{ y + 15 }}" width="100" height="30">
         <input
             type="text"
-            class="wide-spaced tokens"
-            id="tokens_{{ id }}"
-            name="tokens_{{ id }}"
-            placeholder="Tokens"
-            value="{{ request.form.get('tokens_{}'.format(id)) | empty_if_none }}"
+            class="tokens"
+            id="tokens_ground_{{ id }}"
+            name="tokens_ground_{{ id }}"
+            placeholder="on ground"
+            value="{{ request.form.get('tokens_ground_{}'.format(id)) | empty_if_none }}"
             onkeyup="token_input_change(this);"
         />
     </foreignObject>
-    <foreignObject x="{{ x }}" y="{{ y + 50 }}" width="100" height="30">
+{% endmacro %}
+
+{% macro input_tokens_platform(x, y, id) %}
+    <foreignObject x="{{ x + 8 }}" y="{{ y - 15 }}" width="80" height="30">
+        <label for="tokens_platform_{{ id }}" title="Tokens on the raised area in a scoring zone">Tokens</label>
+    </foreignObject>
+    <foreignObject x="{{ x }}" y="{{ y + 15 }}" width="100" height="30">
         <input
             type="text"
-            class="robot-tlas"
-            id="robot_tlas_{{ id }}"
-            name="robot_tlas_{{ id }}"
-            placeholder="Robot TLAs"
-            value="{{ request.form.get('robot_tlas_{}'.format(id)) | empty_if_none }}"
-            onkeyup="robot_tla_input_change(this);"
+            class="tokens"
+            id="tokens_platform_{{ id }}"
+            name="tokens_platform_{{ id }}"
+            placeholder="on platform"
+            value="{{ request.form.get('tokens_platform_{}'.format(id)) | empty_if_none }}"
+            onkeyup="token_input_change(this);"
         />
     </foreignObject>
 {% endmacro %}
@@ -76,6 +85,40 @@
     </foreignObject>
 {% endmacro %}
 
+{% macro input_tokens_held(x, y, id) %}
+    <foreignObject x="{{ x - 40 }}" y="{{ y }}" width="80" height="30">
+        <label for="tokens_held_{{ id }}">Tokens</label>
+    </foreignObject>
+    <foreignObject x="{{ x + 45 }}" y="{{ y }}" width="100" height="30">
+        <input
+            type="text"
+            class="tokens"
+            id="tokens_held_{{ id }}"
+            name="tokens_held_{{ id }}"
+            placeholder="in robot"
+            value="{{ request.form.get('tokens_held_{}'.format(id)) | empty_if_none }}"
+            onkeyup="token_input_change(this);"
+        />
+    </foreignObject>
+{% endmacro %}
+
+{% macro input_tokens_elsewhere(x, y) %}
+    <foreignObject x="{{ x - 85 }}" y="{{ y }}" width="170" height="30">
+        <label for="tokens_elsewhere">Tokens elsewhere</label>
+    </foreignObject>
+    <foreignObject x="{{ x + 90 }}" y="{{ y }}" width="100" height="30">
+        <input
+            type="text"
+            class="tokens"
+            id="tokens_elsewhere"
+            name="tokens_elsewhere"
+            placeholder="tokens"
+            value="{{ request.form.get('tokens_elsewhere') | empty_if_none }}"
+            onkeyup="token_input_change(this);"
+        />
+    </foreignObject>
+{% endmacro %}
+
 {% block main %}
     <div class="score-sheet"
     {% set arena_colour_raw = arenas[match['arena']].colour %}
@@ -95,82 +138,67 @@
         </h1>
 
         <form method="POST">
-            <svg xmlns="http://www.w3.org/2000/svg" height="840" width="600" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <svg xmlns="http://www.w3.org/2000/svg" height="890" width="600" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <g font-size="1.2em" fill="#4d4d4d">
-                    <text><tspan y="25" x="125">Zone 0</tspan></text>
-                    <text><tspan y="25" x="425">Zone 1</tspan></text>
-                    <text><tspan y="820" x="425">Zone 2</tspan></text>
-                    <text><tspan y="820" x="125">Zone 3</tspan></text>
+                    <text><tspan y="25" x="125">Area 0</tspan></text>
+                    <text><tspan y="25" x="425">Area 1</tspan></text>
+                    <text><tspan y="840" x="425">Area 2</tspan></text>
+                    <text><tspan y="840" x="125">Area 3</tspan></text>
                 </g>
 
-                <!-- Zone 0 -->
+                <!-- Area 0 -->
                 {{ input_tla(10, 40, 0) }}
                 {{ input_present(170, 40, 0) }}
                 {{ input_disqualified(130, 70, 0) }}
+                {{ input_tokens_held(110, 110, 0) }}
 
-                <!-- Zone 1 -->
+                <!-- Area 1 -->
                 {{ input_tla(310, 40, 1) }}
                 {{ input_present(470, 40, 1) }}
                 {{ input_disqualified(430, 70, 1) }}
+                {{ input_tokens_held(410, 110, 1) }}
 
-                <g transform="translate(0, 700)">
-                    <!-- Zone 2 -->
+                <g transform="translate(0, 710)">
+                    <!-- Area 2 -->
                     {{ input_tla(310, 40, 2) }}
                     {{ input_present(470, 40, 2) }}
                     {{ input_disqualified(430, 70, 2) }}
+                    {{ input_tokens_held(410, -10, 2) }}
 
-                    <!-- Zone 3 -->
+                    <!-- Area 3 -->
                     {{ input_tla(10, 40, 3) }}
                     {{ input_present(170, 40, 3) }}
                     {{ input_disqualified(130, 70, 3) }}
+                    {{ input_tokens_held(110, -10, 3) }}
                 </g>
 
-                <g transform="translate(0, 120)">
-                    <rect height="600" width="600" stroke="#000" y="0" x="0" stroke-width="1" fill="#f8f7ff"/>
-                    <rect height="360" width="360" stroke="#000" y="120" x="120" stroke-width="1" fill="#eeeeee"/>
-                    <rect height="120" width="120" stroke="#000" y="240" x="240" stroke-width="1" fill="#f8f7ff"/>
+                <g transform="translate(60, 180)">
+                    <rect height="480" width="480" stroke="#000" y="0" x="0" stroke-width="1" fill="#f8f7ff"/>
+                    <rect height="240" width="240" stroke="#000" y="120" x="120" stroke-width="1" fill="#f8f7ff"/>
 
-                    <path d="M120 0 V 600" stroke="#000" stroke-width="1"/>
-                    <path d="M240 0 V 600" stroke="#000" stroke-width="1"/>
-                    <path d="M360 0 V 600" stroke="#000" stroke-width="1"/>
-                    <path d="M480 0 V 600" stroke="#000" stroke-width="1"/>
+                    <path d="M240 0 V 480" stroke="#000" stroke-width="1"/>
+                    <path d="M0 240 H 480" stroke="#000" stroke-width="1"/>
 
-                    <path d="M0 120 H 600" stroke="#000" stroke-width="1"/>
-                    <path d="M0 240 H 600" stroke="#000" stroke-width="1"/>
-                    <path d="M0 360 H 600" stroke="#000" stroke-width="1"/>
-                    <path d="M0 480 H 600" stroke="#000" stroke-width="1"/>
+                    {{ input_tokens_ground( 30, 380, '0') }}
+                    {{ input_tokens_ground( 30,  60, '1') }}
+                    {{ input_tokens_ground(350,  60, '2') }}
+                    {{ input_tokens_ground(350, 380, '3') }}
 
-                    {{ input_zone( 10, 20, '0_0') }}
-                    {{ input_zone(130, 20, '0_1') }}
-                    {{ input_zone(250, 20, '0_2') }}
-                    {{ input_zone(370, 20, '0_3') }}
-                    {{ input_zone(490, 20, '0_4') }}
+                    {{ input_tokens_platform(130, 285, '0') }}
+                    {{ input_tokens_platform(130, 165, '1') }}
+                    {{ input_tokens_platform(250, 165, '2') }}
+                    {{ input_tokens_platform(250, 285, '3') }}
 
-                    {{ input_zone( 10, 140, '1_0') }}
-                    {{ input_zone(130, 140, '1_1') }}
-                    {{ input_zone(250, 140, '1_2') }}
-                    {{ input_zone(370, 140, '1_3') }}
-                    {{ input_zone(490, 140, '1_4') }}
+                    <g font-size="1.2em" fill="#4d4d4d">
+                        <text><tspan y="460" x="30">Zone 0</tspan></text>
+                        <text><tspan y="30" x="30">Zone 1</tspan></text>
+                        <text><tspan y="30" x="380">Zone 2</tspan></text>
+                        <text><tspan y="460" x="380">Zone 3</tspan></text>
+                    </g>
+                </g>
 
-                    {{ input_zone( 10, 260, '2_0') }}
-                    {{ input_zone(130, 260, '2_1') }}
-                    {{ input_zone(250, 260, '2_2') }}
-                    {{ input_zone(370, 260, '2_3') }}
-                    {{ input_zone(490, 260, '2_4') }}
-
-                    {{ input_zone( 10, 380, '3_0') }}
-                    {{ input_zone(130, 380, '3_1') }}
-                    {{ input_zone(250, 380, '3_2') }}
-                    {{ input_zone(370, 380, '3_3') }}
-                    {{ input_zone(490, 380, '3_4') }}
-
-                    {{ input_zone( 10, 500, '4_0') }}
-                    {{ input_zone(130, 500, '4_1') }}
-                    {{ input_zone(250, 500, '4_2') }}
-                    {{ input_zone(370, 500, '4_3') }}
-                    {{ input_zone(490, 500, '4_4') }}
-
-
+                <g transform="translate(0, 860)">
+                    {{ input_tokens_elsewhere(225, 0) }}
                 </g>
             </svg>
 
@@ -240,7 +268,7 @@
     {% endif %}
 
     <script type="text/javascript">
-        var valid_token_regex = /^[GOPWY]*$/;
+        var valid_token_regex = /^\d*$/;
 
         var token_input_change = function(input) {
             input.value = input.value.toUpperCase();
@@ -257,33 +285,6 @@
         var tokenInputs = document.querySelectorAll('input[type=text].tokens');
         for (var i = 0; i < tokenInputs.length; i++) {
             validate_token_input(tokenInputs[i]);
-        }
-
-        var valid_robot_tlas = [
-            {% for tla, team in teams | dictsort %}
-                '{{ tla }}'{% if not loop.last %},{% endif %}
-            {% endfor %}
-        ];
-
-        var robot_tla_input_change = function(input) {
-            input.value = input.value.toUpperCase();
-            validate_robot_tla_input(input);
-        };
-        var validate_robot_tla_input = function(input) {
-            var parts = input.value.split(' ').filter(function(x){ return x; });
-            for (var i=0; i<parts.length; i++) {
-                if (valid_robot_tlas.indexOf(parts[i]) !== -1) {
-                    input.className = '';
-                } else {
-                    input.className = 'invalid';
-                    break;
-                }
-            }
-        };
-
-        var robotTlaInputs = document.querySelectorAll('input[type=text].robot-tlas');
-        for (var i = 0; i < robotTlaInputs.length; i++) {
-            validate_robot_tla_input(robotTlaInputs[i]);
         }
     </script>
 {% endblock %}
