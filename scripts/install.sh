@@ -12,6 +12,8 @@ cp $MY_DIR/run-scorer.sh $HOME
 
 echo "SRComp Scorer installed."
 echo
+echo "You will need to clone the compstate to ~/compstate."
+echo
 echo "Run the scorer via '~/run-scorer.sh'."
 echo "That will launch the scorer and open the UI in Firefox."
 echo
