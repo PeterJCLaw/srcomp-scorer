@@ -202,6 +202,7 @@ def update(arena, num):
 
     template_settings = {'match': match,
                          'arenas': comp.arenas,
+                         'corners': comp.corners,
                          'teams': comp.teams}
 
     if flask.request.method == 'GET':

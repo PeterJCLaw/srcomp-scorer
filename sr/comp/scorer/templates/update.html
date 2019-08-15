@@ -86,10 +86,10 @@
                 <rect height="200" width="200" stroke="#000" y="200" x="200" stroke-width="1" fill="#f4f3ff" transform="rotate(45,300,300)"/>
 
                 <g font-size="2.5em" fill="#4d4d4d" transform="scale(0.75 0.75)">
-                    <text><tspan y="50" x="225">Zone 0</tspan></text>
-                    <text><tspan y="50" x="455">Zone 1</tspan></text>
-                    <text><tspan y="775" x="455">Zone 2</tspan></text>
-                    <text><tspan y="775" x="225">Zone 3</tspan></text>
+                    <text><tspan y="50" x="225" stroke="{{ corners[0].colour }}">Zone 0</tspan></text>
+                    <text><tspan y="50" x="455" stroke="{{ corners[1].colour }}">Zone 1</tspan></text>
+                    <text><tspan y="775" x="455" stroke="{{ corners[2].colour }}">Zone 2</tspan></text>
+                    <text><tspan y="775" x="225" stroke="{{ corners[3].colour }}">Zone 3</tspan></text>
                 </g>
 
                 <!-- Zone 0 -->
