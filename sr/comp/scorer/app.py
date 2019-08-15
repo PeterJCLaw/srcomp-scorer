@@ -100,7 +100,6 @@ def form_to_score(match, form):
         'match_number': match.num,
         'teams': teams,
         'arena_zones': arena_zones,
-        'other': {'tokens_ground': get_tokens('tokens_elsewhere')},
     }
 
 
@@ -118,8 +117,6 @@ def score_to_form(score):
         form['tokens_ground_{}'.format(zone)] = info.get('tokens_ground')
         form['tokens_platform_{}'.format(zone)] = info.get('tokens_platform')
 
-    form['tokens_elsewhere'] = score.get('other', {}).get('tokens_ground')
-
     return form
 
 
@@ -135,8 +132,6 @@ def match_to_form(match):
 
         form['tokens_ground_{}'.format(i)] = None
         form['tokens_platform_{}'.format(i)] = None
-
-    form['tokens_elsewhere'] = None
 
     return form
 
