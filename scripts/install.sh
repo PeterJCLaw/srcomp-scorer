@@ -1,14 +1,14 @@
 #!/bin/sh
 
-#python3 -m venv $HOME/srcomp-venv
+python3 -m venv $HOME/srcomp-venv
 
-#. $HOME/srcomp-venv/bin/activate
+. $HOME/srcomp-venv/bin/activate
 
-#MY_DIR=$(dirname $0)
+MY_DIR=$(dirname $0)
 
-#pip install -r $MY_DIR/requirements.txt
+pip install -r $MY_DIR/requirements.txt
 
-#cp $MY_DIR/run-scorer.sh $HOME
+cp $MY_DIR/run-scorer.sh $HOME
 
 echo "SRComp Scorer installed."
 echo
