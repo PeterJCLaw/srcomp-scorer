@@ -102,23 +102,6 @@
     </foreignObject>
 {% endmacro %}
 
-{% macro input_tokens_elsewhere(x, y) %}
-    <foreignObject x="{{ x - 85 }}" y="{{ y }}" width="170" height="30">
-        <label for="tokens_elsewhere">Tokens elsewhere</label>
-    </foreignObject>
-    <foreignObject x="{{ x + 90 }}" y="{{ y }}" width="100" height="30">
-        <input
-            type="text"
-            class="tokens"
-            id="tokens_elsewhere"
-            name="tokens_elsewhere"
-            placeholder="tokens"
-            value="{{ request.form.get('tokens_elsewhere') | empty_if_none }}"
-            onkeyup="token_input_change(this);"
-        />
-    </foreignObject>
-{% endmacro %}
-
 {% block main %}
     <div class="score-sheet"
     {% set arena_colour_raw = arenas[match['arena']].colour %}
@@ -195,10 +178,6 @@
                         <text><tspan y="30" x="380">Zone 2</tspan></text>
                         <text><tspan y="460" x="380">Zone 3</tspan></text>
                     </g>
-                </g>
-
-                <g transform="translate(0, 860)">
-                    {{ input_tokens_elsewhere(225, 0) }}
                 </g>
             </svg>
 
