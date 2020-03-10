@@ -151,8 +151,11 @@ def update_and_validate(compstate, match, score, force):
 
 
 def commit_and_push(compstate, match):
-    commit_msg = 'Update {} scores for match {} in arena {}' \
-        .format(match.type.value, match.num, match.arena)
+    commit_msg = 'Update {} scores for match {} in arena {}'.format(
+        match.type.value,
+        match.num,
+        match.arena,
+    )
 
     compstate.commit_and_push(commit_msg, allow_empty=True)
 
@@ -170,11 +173,14 @@ def before_request():
         return  # no authentication configured
 
     auth = flask.request.authorization
-    if auth is None or \
-            correct_username != auth.username or \
-            correct_password != auth.password:
-        return flask.Response('Authentication failed.', 401,
-            {'WWW-Authenticate': 'Basic realm="Authentication required."'})
+    if (
+        auth is None or
+        correct_username != auth.username or
+        correct_password != auth.password
+    ):
+        return flask.Response('Authentication failed.', 401, {
+            'WWW-Authenticate': 'Basic realm="Authentication required."',
+        })
 
 
 @app.route('/')
@@ -182,11 +188,16 @@ def index():
     comp = flask.g.compstate.load()
     all_matches = group_list_dict(comp.schedule.matches, comp.arenas.keys())
     now = datetime.now(dateutil.tz.tzlocal())
-    current_matches = {match.arena: match
-                       for match in comp.schedule.matches_at(now)}
-    return flask.render_template('index.html', all_matches=all_matches,
-                                 current_matches=current_matches,
-                                 arenas=comp.arenas.values())
+    current_matches = {
+        match.arena: match
+        for match in comp.schedule.matches_at(now)
+    }
+    return flask.render_template(
+        'index.html',
+        all_matches=all_matches,
+        current_matches=current_matches,
+        arenas=comp.arenas.values(),
+    )
 
 
 @app.route('/<arena>/<int:num>', methods=['GET', 'POST'])
@@ -199,10 +210,12 @@ def update(arena, num):
     except (IndexError, KeyError):
         flask.abort(404)
 
-    template_settings = {'match': match,
-                         'arenas': comp.arenas,
-                         'corners': comp.corners,
-                         'teams': comp.teams}
+    template_settings = {
+        'match': match,
+        'arenas': comp.arenas,
+        'corners': comp.corners,
+        'teams': comp.teams,
+    }
 
     if flask.request.method == 'GET':
         try:
@@ -215,9 +228,11 @@ def update(arena, num):
         try:
             score = form_to_score(match, flask.request.form)
         except ValueError as e:
-            return flask.render_template('update.html',
-                                         error=str(e),
-                                         **template_settings)
+            return flask.render_template(
+                'update.html',
+                error=str(e),
+                **template_settings,
+            )
 
         try:
             force = bool(flask.request.form.get('force'))
@@ -225,16 +240,20 @@ def update(arena, num):
             update_and_validate(compstate, match, score, force)
             commit_and_push(compstate, match)
         except RuntimeError as e:
-            return flask.render_template('update.html',
-                                         error=str(e),
-                                         **template_settings)
+            return flask.render_template(
+                'update.html',
+                error=str(e),
+                **template_settings,
+            )
         else:
             url = flask.url_for('update', arena=arena, num=num) + '?done'
             return flask.redirect(url)
 
-    return flask.render_template('update.html',
-                                 done='done' in flask.request.args,
-                                 **template_settings)
+    return flask.render_template(
+        'update.html',
+        done='done' in flask.request.args,
+        **template_settings,
+    )
 
 
 @app.errorhandler(404)
