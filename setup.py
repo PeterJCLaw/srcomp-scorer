@@ -20,7 +20,16 @@ setup(
         'Flask >=1.0, <2',
         'sr.comp >=1.0, <2',
     ],
+    python_requires='>=3.5',
     setup_requires=[
         'Sphinx >=1.3, <2',
+    ],
+    classifiers=[
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3 :: Only',
     ],
 )
