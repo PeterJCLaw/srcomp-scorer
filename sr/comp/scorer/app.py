@@ -151,7 +151,7 @@ def update_and_validate(compstate, match, score, force):
 
 
 def commit_and_push(compstate, match):
-    commit_msg = 'Update {} scores for match {} in arena {}'.format(
+    commit_msg = "Update {} scores for match {} in arena {}".format(
         match.type.value,
         match.num,
         match.arena,
