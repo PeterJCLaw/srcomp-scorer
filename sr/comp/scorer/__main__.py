@@ -1,6 +1,6 @@
-from sr.comp.scorer.app import app
 import argparse
 
+from sr.comp.scorer.app import app
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='SR Competition Scorer')

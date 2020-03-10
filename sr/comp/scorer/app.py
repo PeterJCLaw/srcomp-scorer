@@ -1,15 +1,14 @@
 import collections
-from datetime import datetime
-import dateutil.tz
 import os
-import six.moves
 import sys
+from datetime import datetime
 
+import dateutil.tz
 import flask
+import six.moves
 
 from sr.comp.raw_compstate import RawCompstate
 from sr.comp.validation import validate
-
 
 app = flask.Flask('sr.comp.scorer')
 app.debug = True
