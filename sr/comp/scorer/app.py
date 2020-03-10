@@ -85,7 +85,7 @@ def form_to_score(match, form):
     zones = list(zone_ids) + ['other']
     arena = {}
     for zone in zones:
-        arena[zone] = { 'tokens': form.get('tokens_{}'.format(zone), '') }
+        arena[zone] = {'tokens': form.get('tokens_{}'.format(zone), '')}
 
     return {
         'arena_id': match.arena,
