@@ -14,6 +14,7 @@ app = flask.Flask('sr.comp.scorer')
 app.debug = True
 
 
+@app.template_global()
 def grouper(iterable, n, fillvalue=None):
     """
     Collect data into fixed-length chunks or blocks.
@@ -23,18 +24,17 @@ def grouper(iterable, n, fillvalue=None):
     """
     args = [iter(iterable)] * n
     return six.moves.zip_longest(fillvalue=fillvalue, *args)
-app.jinja_env.globals.update(grouper=grouper)
 
 
+@app.template_filter()
 def empty_if_none(string):
     return string if string is not None else ''
-app.jinja_env.filters.update(empty_if_none=empty_if_none)
 
 
+@app.template_global()
 def parse_hex_colour(string):
     string = string.strip('#')
     return int(string[:2], 16), int(string[2:4], 16), int(string[4:], 16)
-app.jinja_env.globals.update(parse_hex_colour=parse_hex_colour)
 
 
 def group_list_dict(matches, keys):
@@ -55,10 +55,10 @@ def group_list_dict(matches, keys):
     return target
 
 
+@app.template_global()
 def is_match_done(match):
     path = flask.g.compstate.get_score_path(match)
     return os.path.exists(path)
-app.jinja_env.globals.update(is_match_done=is_match_done)
 
 
 def form_to_score(match, form):
