@@ -18,9 +18,9 @@ setup(
         'PyYAML >=3.11, <5',
         'six >=1.8, <2',
         'Flask >=1.0, <2',
-        'sr.comp >=1.0, <2'
+        'sr.comp >=1.0, <2',
     ],
     setup_requires=[
-        'Sphinx >=1.3, <2'
-    ]
+        'Sphinx >=1.3, <2',
+    ],
 )
