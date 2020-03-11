@@ -5,7 +5,7 @@ with open('README.rst') as f:
 
 setup(
     name='sr.comp.scorer',
-    version='1.0.0',
+    version='1.1.0',
     packages=find_packages(),
     namespace_packages=['sr', 'sr.comp'],
     description="Student Robotics Competition Score Entry Application",
@@ -18,7 +18,7 @@ setup(
         'PyYAML >=3.11, <5',
         'six >=1.8, <2',
         'Flask >=1.0, <2',
-        'sr.comp >=1.0, <2',
+        'sr.comp >=1.2, <2',
     ],
     python_requires='>=3.5',
     setup_requires=[

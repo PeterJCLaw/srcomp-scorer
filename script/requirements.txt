@@ -1,5 +1,4 @@
 # Required for deployment
-git+https://github.com/PeterJCLaw/ranker
 git+https://github.com/PeterJCLaw/srcomp
 
 
