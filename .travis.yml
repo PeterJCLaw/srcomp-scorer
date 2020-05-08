@@ -9,6 +9,7 @@ matrix:
   allow_failures:
     - python: "3.9-dev"
 before_install:
+  - pip install -U pip setuptools
   - pip install git+https://github.com/PeterJCLaw/srcomp.git
   - pip install -r script/linting/requirements.txt
 install: python setup.py install
