@@ -1,4 +1,4 @@
-from setuptools import find_packages, setup
+from setuptools import find_namespace_packages, setup
 
 with open('README.rst') as f:
     long_description = f.read()
@@ -6,7 +6,7 @@ with open('README.rst') as f:
 setup(
     name='sr.comp.scorer',
     version='1.1.0',
-    packages=find_packages(),
+    packages=find_namespace_packages(),
     namespace_packages=['sr', 'sr.comp'],
     description="Student Robotics Competition Score Entry Application",
     long_description=long_description,
