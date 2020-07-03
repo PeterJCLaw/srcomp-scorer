@@ -242,7 +242,7 @@ def update(arena, num):
         except RuntimeError as e:
             return flask.render_template(
                 'update.html',
-                error=str(e),
+                error=str(e) or repr(e),
                 **template_settings,
             )
         else:
