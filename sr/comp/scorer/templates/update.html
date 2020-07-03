@@ -42,6 +42,15 @@
     </foreignObject>
 {% endmacro %}
 
+{% macro input_left_scoring_zone(x, y, corner) %}
+    <foreignObject x="{{ x }}" y="{{ y }}" width="160" height="30">
+        <label for="left_scoring_zone_{{ corner }}">Left scoring zone</label>
+    </foreignObject>
+    <foreignObject x="{{ x + 165 }}" y="{{ y + 10 }}" width="30" height="30">
+        <input type="checkbox" id="left_scoring_zone_{{ corner }}" name="left_scoring_zone_{{ corner }}" value="on" {{ 'checked' if request.form.get('left_scoring_zone_{}'.format(corner)) else '' }} />
+    </foreignObject>
+{% endmacro %}
+
 {% macro input_present(x, y, corner) %}
     <foreignObject x="{{ x }}" y="{{ y }}" width="80" height="30">
         <label for="present_{{ corner }}">Present</label>
@@ -95,26 +104,30 @@
                 <!-- Zone 0 -->
                 {{ input_tla(110, 70, 0) }}
                 {{ input_tokens(60, 120, 0) }}
-                {{ input_present(80, 170, 0) }}
-                {{ input_disqualified(35, 220, 0) }}
+                {{ input_left_scoring_zone(15, 170, 0) }}
+                {{ input_present(55, 205, 0) }}
+                {{ input_disqualified(15, 240, 0) }}
 
                 <!-- Zone 1 -->
                 {{ input_tla(345, 70, 1) }}
                 {{ input_tokens(355, 120, 1) }}
-                {{ input_present(405, 170, 1) }}
-                {{ input_disqualified(410, 220, 1) }}
+                {{ input_left_scoring_zone(375, 170, 1) }}
+                {{ input_present(455, 205, 1) }}
+                {{ input_disqualified(415, 240, 1) }}
 
                 <!-- Zone 2 -->
-                {{ input_tla(425, 350, 2) }}
-                {{ input_tokens(370, 400, 2) }}
-                {{ input_present(385, 450, 2) }}
-                {{ input_disqualified(335, 500, 2) }}
+                {{ input_tla(425, 340, 2) }}
+                {{ input_tokens(370, 390, 2) }}
+                {{ input_left_scoring_zone(365, 440, 2) }}
+                {{ input_present(405, 475, 2) }}
+                {{ input_disqualified(365, 510, 2) }}
 
                 <!-- Zone 3 -->
-                {{ input_tla(30, 350, 3) }}
-                {{ input_tokens(45, 400, 3) }}
-                {{ input_present(100, 450, 3) }}
-                {{ input_disqualified(110, 500, 3) }}
+                {{ input_tla(30, 340, 3) }}
+                {{ input_tokens(45, 390, 3) }}
+                {{ input_left_scoring_zone(65, 440, 3) }}
+                {{ input_present(105, 475, 3) }}
+                {{ input_disqualified(65, 510, 3) }}
 
                 <!-- Center -->
                 {{ input_tokens(200, 285, 'other') }}
