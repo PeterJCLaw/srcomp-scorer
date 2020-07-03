@@ -37,7 +37,7 @@
     <foreignObject x="{{ x }}" y="{{ y }}" width="70" height="30">
         <label for="tokens_{{ corner }}">Tokens</label>
     </foreignObject>
-    <foreignObject x="{{ x + 75 }}" y="{{ y }}" width="120" height="30">
+    <foreignObject x="{{ x + 75 }}" y="{{ y }}" width="150" height="30">
         <input class="tokens" type="text" id="tokens_{{ corner }}" name="tokens_{{ corner }}" value="{{ request.form.get('tokens_{}'.format(corner)) | empty_if_none }}" onkeyup="token_input_change(this);" />
     </foreignObject>
 {% endmacro %}
@@ -103,34 +103,34 @@
 
                 <!-- Zone 0 -->
                 {{ input_tla(110, 70, 0) }}
-                {{ input_tokens(60, 120, 0) }}
+                {{ input_tokens(40, 120, 0) }}
                 {{ input_left_scoring_zone(15, 170, 0) }}
                 {{ input_present(55, 205, 0) }}
                 {{ input_disqualified(15, 240, 0) }}
 
                 <!-- Zone 1 -->
                 {{ input_tla(345, 70, 1) }}
-                {{ input_tokens(355, 120, 1) }}
+                {{ input_tokens(335, 120, 1) }}
                 {{ input_left_scoring_zone(375, 170, 1) }}
                 {{ input_present(455, 205, 1) }}
                 {{ input_disqualified(415, 240, 1) }}
 
                 <!-- Zone 2 -->
                 {{ input_tla(425, 340, 2) }}
-                {{ input_tokens(370, 390, 2) }}
+                {{ input_tokens(350, 390, 2) }}
                 {{ input_left_scoring_zone(365, 440, 2) }}
                 {{ input_present(405, 475, 2) }}
                 {{ input_disqualified(365, 510, 2) }}
 
                 <!-- Zone 3 -->
                 {{ input_tla(30, 340, 3) }}
-                {{ input_tokens(45, 390, 3) }}
+                {{ input_tokens(10, 390, 3) }}
                 {{ input_left_scoring_zone(65, 440, 3) }}
                 {{ input_present(105, 475, 3) }}
                 {{ input_disqualified(65, 510, 3) }}
 
                 <!-- Center -->
-                {{ input_tokens(200, 285, 'other') }}
+                {{ input_tokens(180, 285, 'other') }}
             </svg>
 
             <input type="hidden" name="force" />
