@@ -1,11 +1,12 @@
 import collections
+import io
+import itertools
 import os
 import sys
 from datetime import datetime
 
 import dateutil.tz
 import flask
-import six.moves
 
 from sr.comp.raw_compstate import RawCompstate
 from sr.comp.validation import validate
@@ -23,7 +24,7 @@ def grouper(iterable, n, fillvalue=None):
     ['ABC', 'DEF', 'Gxx']
     """
     args = [iter(iterable)] * n
-    return six.moves.zip_longest(fillvalue=fillvalue, *args)
+    return itertools.zip_longest(fillvalue=fillvalue, *args)
 
 
 @app.template_filter()
@@ -143,7 +144,7 @@ def update_and_validate(compstate, match, score, force):
         if not force:
             # TODO Update SRComp to return the error messages.
             old_stderr = sys.stderr
-            sys.stderr = new_stderr = six.moves.StringIO()
+            sys.stderr = new_stderr = io.StringIO()
             num_errors = validate(comp)
             sys.stderr = old_stderr
             if num_errors:

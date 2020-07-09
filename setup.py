@@ -16,7 +16,6 @@ setup(
     author_email="srobo-devel@googlegroups.com",
     install_requires=[
         'PyYAML >=3.11, <5',
-        'six >=1.8, <2',
         'Flask >=1.0, <2',
         'sr.comp >=1.2, <2',
     ],
