@@ -64,15 +64,15 @@ def is_match_done(match):
 
 def form_to_score(match, form):
 
-    def form_team_to_score(zone, teams):
-        tla = form.get('tla_{}'.format(zone), None)
+    def form_team_to_score(zone_id, teams):
+        tla = form.get('tla_{}'.format(zone_id), None)
         if tla:
             team = {
-                'zone': zone,
+                'zone': zone_id,
                 'disqualified':
-                    form.get('disqualified_{}'.format(zone), None) is not None,
+                    form.get('disqualified_{}'.format(zone_id), None) is not None,
                 'present':
-                    form.get('present_{}'.format(zone), None) is not None,
+                    form.get('present_{}'.format(zone_id), None) is not None,
             }
 
             teams[tla] = team
@@ -80,8 +80,8 @@ def form_to_score(match, form):
     zone_ids = range(len(match.teams))
 
     teams = {}
-    for i in zone_ids:
-        form_team_to_score(i, teams)
+    for zone_id in zone_ids:
+        form_team_to_score(zone_id, teams)
 
     zones = list(zone_ids) + ['other']
     arena = {}
@@ -100,10 +100,10 @@ def score_to_form(score):
     form = {}
 
     for tla, info in score['teams'].items():
-        i = info['zone']
-        form['tla_{}'.format(i)] = tla
-        form['disqualified_{}'.format(i)] = info.get('disqualified', False)
-        form['present_{}'.format(i)] = info.get('present', True)
+        zone_id = info['zone']
+        form['tla_{}'.format(zone_id)] = tla
+        form['disqualified_{}'.format(zone_id)] = info.get('disqualified', False)
+        form['present_{}'.format(zone_id)] = info.get('present', True)
 
     for zone, info in score['arena_zones'].items():
         form['tokens_{}'.format(zone)] = info['tokens'].upper()
@@ -114,13 +114,13 @@ def score_to_form(score):
 def match_to_form(match):
     form = {}
 
-    for i, tla in enumerate(match.teams):
+    for zone_id, tla in enumerate(match.teams):
         if tla:
-            form['tla_{}'.format(i)] = tla
-            form['disqualified_{}'.format(i)] = False
-            form['present_{}'.format(i)] = False
+            form['tla_{}'.format(zone_id)] = tla
+            form['disqualified_{}'.format(zone_id)] = False
+            form['present_{}'.format(zone_id)] = False
 
-        form['tokens_{}'.format(i)] = ''
+        form['tokens_{}'.format(zone_id)] = ''
 
     form['tokens'] = ''
 
