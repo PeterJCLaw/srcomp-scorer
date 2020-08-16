@@ -12,8 +12,7 @@ class Converter:
     Base class for converting between representations of a match's score.
     """
 
-    @staticmethod
-    def form_team_to_score(form, zone_id):
+    def form_team_to_score(self, form, zone_id):
         """
         Prepare the part of the score dict for the given zone from the form data.
         """
@@ -25,8 +24,7 @@ class Converter:
                 form.get('present_{}'.format(zone_id), None) is not None,
         }
 
-    @classmethod
-    def form_to_score(cls, match, form):
+    def form_to_score(self, match, form):
         """
         Prepare a score dict for the given match and form dict.
 
@@ -39,7 +37,7 @@ class Converter:
         for zone_id in zone_ids:
             tla = form.get('tla_{}'.format(zone_id), None)
             if tla:
-                teams[tla] = cls.form_team_to_score(form, zone_id)
+                teams[tla] = self.form_team_to_score(form, zone_id)
 
         zones = list(zone_ids) + ['other']
         arena = {}
@@ -53,8 +51,7 @@ class Converter:
             'arena_zones': arena,
         }
 
-    @staticmethod
-    def score_to_form(score):
+    def score_to_form(self, score):
         """
         Prepare a form dict for the given score dict.
 
@@ -73,8 +70,7 @@ class Converter:
 
         return form
 
-    @staticmethod
-    def match_to_form(match: Match) -> Dict[str, Union[str, bool]]:
+    def match_to_form(self, match: Match) -> Dict[str, Union[str, bool]]:
         """
         Prepare a fresh form dict for the given match.
 

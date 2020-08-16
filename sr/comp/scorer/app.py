@@ -171,7 +171,7 @@ def update(arena, num):
     compstate = flask.g.compstate
     comp = compstate.load()
 
-    converter = load_converter(comp.root)
+    converter = load_converter(comp.root)()
 
     try:
         match = comp.schedule.matches[num][arena]
