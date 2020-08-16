@@ -79,46 +79,53 @@
         </h1>
 
         <form method="POST">
-            <svg xmlns="http://www.w3.org/2000/svg" height="600" width="600" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <rect height="600" width="600" stroke="#000" y="0" x="0" stroke-width="2" fill="#f4f3ff"/>
-                <path d="M300 0 V 600" stroke="#000" stroke-width="1"/>
-                <path d="M0 300 H 600" stroke="#000" stroke-width="1"/>
-                <rect height="200" width="200" stroke="#000" y="200" x="200" stroke-width="1" fill="#f4f3ff" transform="rotate(45,300,300)"/>
+            {% block form_content %}
+                <svg xmlns="http://www.w3.org/2000/svg" height="600" width="600" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <rect height="600" width="600" stroke="#000" y="0" x="0" stroke-width="2" fill="#f4f3ff"/>
+                    <path d="M300 0 V 600" stroke="#000" stroke-width="1"/>
+                    <path d="M0 300 H 600" stroke="#000" stroke-width="1"/>
+                    <rect height="200" width="200" stroke="#000" y="200" x="200" stroke-width="1" fill="#f4f3ff" transform="rotate(45,300,300)"/>
 
-                <g font-size="2.5em" fill="#4d4d4d" transform="scale(0.75 0.75)">
-                    <text><tspan y="50" x="225" stroke="{{ corners[0].colour }}">Zone 0</tspan></text>
-                    <text><tspan y="50" x="455" stroke="{{ corners[1].colour }}">Zone 1</tspan></text>
-                    <text><tspan y="775" x="455" stroke="{{ corners[2].colour }}">Zone 2</tspan></text>
-                    <text><tspan y="775" x="225" stroke="{{ corners[3].colour }}">Zone 3</tspan></text>
-                </g>
+                    <g font-size="2.5em" fill="#4d4d4d" transform="scale(0.75 0.75)">
+                        <text><tspan y="50" x="225" stroke="{{ corners[0].colour }}">Zone 0</tspan></text>
+                        <text><tspan y="50" x="455" stroke="{{ corners[1].colour }}">Zone 1</tspan></text>
+                        <text><tspan y="775" x="455" stroke="{{ corners[2].colour }}">Zone 2</tspan></text>
+                        <text><tspan y="775" x="225" stroke="{{ corners[3].colour }}">Zone 3</tspan></text>
+                    </g>
 
-                <!-- Zone 0 -->
-                {{ input_tla(110, 70, 0) }}
-                {{ input_tokens(60, 120, 0) }}
-                {{ input_present(80, 170, 0) }}
-                {{ input_disqualified(35, 220, 0) }}
+                    {% block zone_0 %}
+                        {{ input_tla(110, 70, 0) }}
+                        {{ input_tokens(60, 120, 0) }}
+                        {{ input_present(80, 170, 0) }}
+                        {{ input_disqualified(35, 220, 0) }}
+                    {% endblock %}
 
-                <!-- Zone 1 -->
-                {{ input_tla(345, 70, 1) }}
-                {{ input_tokens(355, 120, 1) }}
-                {{ input_present(405, 170, 1) }}
-                {{ input_disqualified(410, 220, 1) }}
+                    {% block zone_1 %}
+                        {{ input_tla(345, 70, 1) }}
+                        {{ input_tokens(355, 120, 1) }}
+                        {{ input_present(405, 170, 1) }}
+                        {{ input_disqualified(410, 220, 1) }}
+                    {% endblock %}
 
-                <!-- Zone 2 -->
-                {{ input_tla(425, 350, 2) }}
-                {{ input_tokens(370, 400, 2) }}
-                {{ input_present(385, 450, 2) }}
-                {{ input_disqualified(335, 500, 2) }}
+                    {% block zone_2 %}
+                        {{ input_tla(425, 350, 2) }}
+                        {{ input_tokens(370, 400, 2) }}
+                        {{ input_present(385, 450, 2) }}
+                        {{ input_disqualified(335, 500, 2) }}
+                    {% endblock %}
 
-                <!-- Zone 3 -->
-                {{ input_tla(30, 350, 3) }}
-                {{ input_tokens(45, 400, 3) }}
-                {{ input_present(100, 450, 3) }}
-                {{ input_disqualified(110, 500, 3) }}
+                    {% block zone_3 %}
+                        {{ input_tla(30, 350, 3) }}
+                        {{ input_tokens(45, 400, 3) }}
+                        {{ input_present(100, 450, 3) }}
+                        {{ input_disqualified(110, 500, 3) }}
+                    {% endblock %}
 
-                <!-- Center -->
-                {{ input_tokens(200, 285, 'other') }}
-            </svg>
+                    {% block zone_other %}
+                        {{ input_tokens(200, 285, 'other') }}
+                    {% endblock %}
+                </svg>
+            {% endblock %}
 
             <input type="hidden" name="force" />
             <input type="submit" value="Enter Scores" />
@@ -185,24 +192,28 @@
         </script>
     {% endif %}
 
-    <script type="text/javascript">
-        var valid_token_regex = /^[GOPWY]*$/;
+    {% block script %}
+        <script type="text/javascript">
+            {% block valid_token_regex %}
+                var valid_token_regex = /^[GOPWY]*$/;
+            {% endblock %}
 
-        var token_input_change = function(input) {
-            input.value = input.value.toUpperCase();
-            validate_token_input(input);
-        };
-        var validate_token_input = function(input) {
-            if (input.value.match(valid_token_regex)) {
-                input.className = '';
-            } else {
-                input.className = 'invalid';
+            var token_input_change = function(input) {
+                input.value = input.value.toUpperCase();
+                validate_token_input(input);
+            };
+            var validate_token_input = function(input) {
+                if (input.value.match(valid_token_regex)) {
+                    input.className = '';
+                } else {
+                    input.className = 'invalid';
+                }
+            };
+
+            var tokenInputs = document.querySelectorAll('input[type=text].tokens');
+            for (var i = 0; i < tokenInputs.length; i++) {
+                validate_token_input(tokenInputs[i]);
             }
-        };
-
-        var tokenInputs = document.querySelectorAll('input[type=text].tokens');
-        for (var i = 0; i < tokenInputs.length; i++) {
-            validate_token_input(tokenInputs[i]);
-        }
-    </script>
+        </script>
+    {% endblock %}
 {% endblock %}

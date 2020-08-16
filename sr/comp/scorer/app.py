@@ -4,9 +4,11 @@ import itertools
 import os
 import sys
 from datetime import datetime
+from typing import Optional
 
 import dateutil.tz
 import flask
+import jinja2
 
 from sr.comp.raw_compstate import RawCompstate
 from sr.comp.scorer.converter import load_converter
@@ -14,6 +16,33 @@ from sr.comp.validation import validate
 
 app = flask.Flask('sr.comp.scorer')
 app.debug = True
+
+
+class CompstateTemplateLoader:
+    def __init__(self, app: flask.Flask) -> None:
+        self.app = app
+        self._loader = None  # type: Optional[jinja2.BaseLoader]
+
+    @property
+    def loader(self) -> jinja2.BaseLoader:
+        if self._loader is None:
+            self._loader = jinja2.FileSystemLoader(os.path.join(
+                os.path.realpath(app.config['COMPSTATE']),
+                'scoring',
+            ))
+        return self._loader
+
+    def get_source(self, environment, template):
+        return self.loader.get_source(environment, template)
+
+    def list_templates(self):
+        return self.loader.list_templates()
+
+
+app.jinja_loader = jinja2.ChoiceLoader([  # type: ignore
+    app.jinja_loader,
+    CompstateTemplateLoader(app),
+])
 
 
 @app.template_global()
