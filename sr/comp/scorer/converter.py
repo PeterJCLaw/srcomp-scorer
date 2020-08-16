@@ -65,7 +65,7 @@ class Converter:
             form['disqualified_{}'.format(zone_id)] = info.get('disqualified', False)
             form['present_{}'.format(zone_id)] = info.get('present', True)
 
-        for zone, info in score['arena_zones'].items():
+        for zone, info in score.get('arena_zones', {}).items():
             form['tokens_{}'.format(zone)] = info['tokens'].upper()
 
         return form
