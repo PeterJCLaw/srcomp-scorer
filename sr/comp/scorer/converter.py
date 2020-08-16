@@ -9,6 +9,9 @@ class Converter:
 
     @staticmethod
     def form_team_to_score(form, zone_id):
+        """
+        Prepare the part of the score dict for the given zone from the form data.
+        """
         return {
             'zone': zone_id,
             'disqualified':
@@ -19,6 +22,12 @@ class Converter:
 
     @classmethod
     def form_to_score(cls, match, form):
+        """
+        Prepare a score dict for the given match and form dict.
+
+        This method is used to convert the submitted information for storage as
+        YAML in the compstate.
+        """
         zone_ids = range(len(match.teams))
 
         teams = {}
@@ -41,6 +50,11 @@ class Converter:
 
     @staticmethod
     def score_to_form(score):
+        """
+        Prepare a form dict for the given score dict.
+
+        This method is used when there is an existing score for a match.
+        """
         form = {}
 
         for tla, info in score['teams'].items():
@@ -55,8 +69,14 @@ class Converter:
         return form
 
     @staticmethod
-    def match_to_form(match):
-        form = {}
+    def match_to_form(match: Match) -> Dict[str, Union[str, bool]]:
+        """
+        Prepare a fresh form dict for the given match.
+
+        This method is used when there is no existing score for a match.
+        """
+
+        form = {}  # type: Dict[str, Union[str, bool]]
 
         for zone_id, tla in enumerate(match.teams):
             if tla:
