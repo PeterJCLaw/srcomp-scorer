@@ -1,5 +1,10 @@
+import copy
+import imp
+import sys
 from pathlib import Path
-from typing import Type
+from typing import cast, Dict, Type, Union
+
+from sr.comp.match_period import Match
 
 
 class Converter:
@@ -97,4 +102,17 @@ def load_converter(compstate_path: Path) -> Type[Converter]:
 
     :param Path compstate_path: The path to the compstate repo.
     """
-    return Converter
+
+    # Deep path hacks
+    score_directory = compstate_path / 'scoring'
+    converter_source = score_directory / 'converter.py'
+
+    saved_path = copy.copy(sys.path)
+    sys.path.append(str(score_directory))
+
+    imported_library = imp.load_source('converter.py', str(converter_source))
+
+    sys.path = saved_path
+
+    converter = imported_library.Converter  # type: ignore[attr-defined]
+    return cast(Type[Converter], converter)
