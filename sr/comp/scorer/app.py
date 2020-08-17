@@ -4,15 +4,45 @@ import itertools
 import os
 import sys
 from datetime import datetime
+from typing import Optional
 
 import dateutil.tz
 import flask
+import jinja2
 
 from sr.comp.raw_compstate import RawCompstate
+from sr.comp.scorer.converter import load_converter
 from sr.comp.validation import validate
 
 app = flask.Flask('sr.comp.scorer')
 app.debug = True
+
+
+class CompstateTemplateLoader:
+    def __init__(self, app: flask.Flask) -> None:
+        self.app = app
+        self._loader = None  # type: Optional[jinja2.BaseLoader]
+
+    @property
+    def loader(self) -> jinja2.BaseLoader:
+        if self._loader is None:
+            self._loader = jinja2.FileSystemLoader(os.path.join(
+                os.path.realpath(app.config['COMPSTATE']),
+                'scoring',
+            ))
+        return self._loader
+
+    def get_source(self, environment, template):
+        return self.loader.get_source(environment, template)
+
+    def list_templates(self):
+        return self.loader.list_templates()
+
+
+app.jinja_loader = jinja2.ChoiceLoader([  # type: ignore
+    app.jinja_loader,
+    CompstateTemplateLoader(app),
+])
 
 
 @app.template_global()
@@ -60,71 +90,6 @@ def group_list_dict(matches, keys):
 def is_match_done(match):
     path = flask.g.compstate.get_score_path(match)
     return os.path.exists(path)
-
-
-def form_to_score(match, form):
-
-    def form_team_to_score(zone_id, teams):
-        tla = form.get('tla_{}'.format(zone_id), None)
-        if tla:
-            team = {
-                'zone': zone_id,
-                'disqualified':
-                    form.get('disqualified_{}'.format(zone_id), None) is not None,
-                'present':
-                    form.get('present_{}'.format(zone_id), None) is not None,
-            }
-
-            teams[tla] = team
-
-    zone_ids = range(len(match.teams))
-
-    teams = {}
-    for zone_id in zone_ids:
-        form_team_to_score(zone_id, teams)
-
-    zones = list(zone_ids) + ['other']
-    arena = {}
-    for zone in zones:
-        arena[zone] = {'tokens': form.get('tokens_{}'.format(zone), '')}
-
-    return {
-        'arena_id': match.arena,
-        'match_number': match.num,
-        'teams': teams,
-        'arena_zones': arena,
-    }
-
-
-def score_to_form(score):
-    form = {}
-
-    for tla, info in score['teams'].items():
-        zone_id = info['zone']
-        form['tla_{}'.format(zone_id)] = tla
-        form['disqualified_{}'.format(zone_id)] = info.get('disqualified', False)
-        form['present_{}'.format(zone_id)] = info.get('present', True)
-
-    for zone, info in score['arena_zones'].items():
-        form['tokens_{}'.format(zone)] = info['tokens'].upper()
-
-    return form
-
-
-def match_to_form(match):
-    form = {}
-
-    for zone_id, tla in enumerate(match.teams):
-        if tla:
-            form['tla_{}'.format(zone_id)] = tla
-            form['disqualified_{}'.format(zone_id)] = False
-            form['present_{}'.format(zone_id)] = False
-
-        form['tokens_{}'.format(zone_id)] = ''
-
-    form['tokens'] = ''
-
-    return form
 
 
 def update_and_validate(compstate, match, score, force):
@@ -206,6 +171,8 @@ def update(arena, num):
     compstate = flask.g.compstate
     comp = compstate.load()
 
+    converter = load_converter(comp.root)()
+
     try:
         match = comp.schedule.matches[num][arena]
     except (IndexError, KeyError):
@@ -222,12 +189,12 @@ def update(arena, num):
         try:
             score = compstate.load_score(match)
         except IOError:
-            flask.request.form = match_to_form(match)
+            flask.request.form = converter.match_to_form(match)
         else:
-            flask.request.form = score_to_form(score)
+            flask.request.form = converter.score_to_form(score)
     elif flask.request.method == 'POST':
         try:
-            score = form_to_score(match, flask.request.form)
+            score = converter.form_to_score(match, flask.request.form)
         except ValueError as e:
             return flask.render_template(
                 'update.html',
