@@ -5,7 +5,7 @@ with open('README.rst') as f:
 
 setup(
     name='sr.comp.scorer',
-    version='1.1.0',
+    version='1.2.0',
     packages=find_namespace_packages(),
     namespace_packages=['sr', 'sr.comp'],
     description="Student Robotics Competition Score Entry Application",
@@ -19,7 +19,7 @@ setup(
         'Flask >=1.0, <2',
         'sr.comp >=1.2, <2',
     ],
-    python_requires='>=3.5',
+    python_requires='>=3.7',
     setup_requires=[
         'Sphinx >=1.3, <2',
     ],
@@ -27,8 +27,6 @@ setup(
         'Intended Audience :: Information Technology',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3 :: Only',
