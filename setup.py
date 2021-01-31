@@ -15,7 +15,7 @@ setup(
     author="Student Robotics Competition Software SIG",
     author_email="srobo-devel@googlegroups.com",
     install_requires=[
-        'PyYAML >=3.11, <5',
+        'PyYAML >=3.11, <6',
         'Flask >=1.0, <2',
         'sr.comp >=1.2, <2',
     ],
@@ -29,6 +29,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3 :: Only',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
