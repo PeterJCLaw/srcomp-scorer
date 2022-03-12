@@ -21,7 +21,7 @@ setup(
     ],
     python_requires='>=3.7',
     setup_requires=[
-        'Sphinx >=1.3, <2',
+        'Sphinx >=1.3, <5',
     ],
     classifiers=[
         'Intended Audience :: Information Technology',
