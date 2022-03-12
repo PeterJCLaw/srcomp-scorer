@@ -1,4 +1,5 @@
 import collections
+import contextlib
 import io
 import itertools
 import os
@@ -108,10 +109,9 @@ def update_and_validate(compstate, match, score, force):
     else:
         if not force:
             # TODO Update SRComp to return the error messages.
-            old_stderr = sys.stderr
-            sys.stderr = new_stderr = io.StringIO()
-            num_errors = validate(comp)
-            sys.stderr = old_stderr
+            with contextlib.redirect_stderr(io.StringIO()) as new_stderr:
+                num_errors = validate(comp)
+
             if num_errors:
                 raise RuntimeError(new_stderr.getvalue())
 
