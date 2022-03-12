@@ -3,7 +3,6 @@ import contextlib
 import io
 import itertools
 import os
-import sys
 from datetime import datetime
 from typing import Optional
 
