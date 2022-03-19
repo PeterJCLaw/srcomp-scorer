@@ -94,7 +94,7 @@ class Converter:
 
 def load_converter(compstate_path: Path) -> Type[Converter]:
     """
-    Load the score coverter module from Compstate repo.
+    Load the score converter module from Compstate repo.
 
     :param Path compstate_path: The path to the compstate repo.
     """
