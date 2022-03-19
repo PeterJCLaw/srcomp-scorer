@@ -5,10 +5,10 @@ SRComp Scorer
 
 A web UI to edit scores from SRComp score files.
 
-Usage
------
+Deployment
+----------
 
-**Install**:
+For using the scorer at an event:
 
 .. code:: shell
 
