@@ -42,22 +42,21 @@
     </foreignObject>
 {% endmacro %}
 
-{% macro input_present(x, y, corner) %}
-    <foreignObject x="{{ x }}" y="{{ y }}" width="80" height="30">
-        <label for="present_{{ corner }}">Present</label>
+{% macro input_checkbox(x, y, width, corner, slug, display) %}
+    <foreignObject x="{{ x }}" y="{{ y }}" width="{{ width }}" height="30">
+        <label for="{{ slug }}_{{ corner }}">{{ display }}</label>
     </foreignObject>
-    <foreignObject x="{{ x + 85 }}" y="{{ y }}" width="30" height="30">
-        <input type="checkbox" id="present_{{ corner }}" name="present_{{ corner }}" value="on" {{ 'checked' if request.form.get('present_{}'.format(corner)) else '' }} />
+    <foreignObject x="{{ x + width + 5 }}" y="{{ y }}" width="30" height="30">
+        <input type="checkbox" id="{{ slug }}_{{ corner }}" name="{{ slug }}_{{ corner }}" value="on" {{ 'checked' if request.form.get('{}_{}'.format(slug, corner)) else '' }} />
     </foreignObject>
 {% endmacro %}
 
+{% macro input_present(x, y, corner) %}
+    {{ input_checkbox(x, y, 80, corner, "present", "Present") }}
+{% endmacro %}
+
 {% macro input_disqualified(x, y, corner) %}
-    <foreignObject x="{{ x }}" y="{{ y }}" width="120" height="30">
-        <label for="disqualified_{{ corner }}">Disqualified</label>
-    </foreignObject>
-    <foreignObject x="{{ x + 125 }}" y="{{ y }}" width="30" height="30">
-        <input type="checkbox" id="disqualified_{{ corner }}" name="disqualified_{{ corner }}" value="on" {{ 'checked' if request.form.get('disqualified_{}'.format(corner)) else '' }} />
-    </foreignObject>
+    {{ input_checkbox(x, y, 120, corner, "disqualified", "Disqualified") }}
 {% endmacro %}
 
 {% block main %}
