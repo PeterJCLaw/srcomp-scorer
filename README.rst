@@ -1,7 +1,7 @@
 SRComp Scorer
 =============
 
-|Build Status| |Docs Status|
+|Build Status|
 
 A web UI to edit scores from SRComp score files.
 
@@ -36,9 +36,5 @@ Developers may wish to use the `SRComp Dev`_ repo to setup a dev instance.
 
 .. |Build Status| image:: https://circleci.com/gh/PeterJCLaw/srcomp-scorer.png?branch=main
    :target: https://circleci.com/gh/PeterJCLaw/srcomp-scorer
-
-.. |Docs Status| image:: https://readthedocs.org/projects/srcomp-scorer/badge/?version=latest
-   :target: https://srcomp-scorer.readthedocs.org/
-
 
 .. _`SRComp Dev`: https://github.com/PeterJCLaw/srcomp-dev
