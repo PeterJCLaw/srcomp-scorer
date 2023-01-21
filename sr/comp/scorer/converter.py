@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import copy
 import imp
 import sys
 from pathlib import Path
-from typing import cast, Dict, Type, Union
+from typing import cast, Type
 
 from sr.comp.match_period import Match
 
@@ -19,9 +21,9 @@ class Converter:
         return {
             'zone': zone_id,
             'disqualified':
-                form.get('disqualified_{}'.format(zone_id), None) is not None,
+                form.get(f'disqualified_{zone_id}', None) is not None,
             'present':
-                form.get('present_{}'.format(zone_id), None) is not None,
+                form.get(f'present_{zone_id}', None) is not None,
         }
 
     def form_to_score(self, match, form):
@@ -35,14 +37,14 @@ class Converter:
 
         teams = {}
         for zone_id in zone_ids:
-            tla = form.get('tla_{}'.format(zone_id), None)
+            tla = form.get(f'tla_{zone_id}', None)
             if tla:
                 teams[tla] = self.form_team_to_score(form, zone_id)
 
         zones = list(zone_ids) + ['other']
         arena = {}
         for zone in zones:
-            arena[zone] = {'tokens': form.get('tokens_{}'.format(zone), '')}
+            arena[zone] = {'tokens': form.get(f'tokens_{zone}', '')}
 
         return {
             'arena_id': match.arena,
@@ -61,38 +63,38 @@ class Converter:
 
         for tla, info in score['teams'].items():
             zone_id = info['zone']
-            form['tla_{}'.format(zone_id)] = tla
-            form['disqualified_{}'.format(zone_id)] = info.get('disqualified', False)
-            form['present_{}'.format(zone_id)] = info.get('present', True)
+            form[f'tla_{zone_id}'] = tla
+            form[f'disqualified_{zone_id}'] = info.get('disqualified', False)
+            form[f'present_{zone_id}'] = info.get('present', True)
 
         for zone, info in score.get('arena_zones', {}).items():
-            form['tokens_{}'.format(zone)] = info['tokens'].upper()
+            form[f'tokens_{zone}'] = info['tokens'].upper()
 
         return form
 
-    def match_to_form(self, match: Match) -> Dict[str, Union[str, bool]]:
+    def match_to_form(self, match: Match) -> dict[str, str | bool]:
         """
         Prepare a fresh form dict for the given match.
 
         This method is used when there is no existing score for a match.
         """
 
-        form = {}  # type: Dict[str, Union[str, bool]]
+        form: dict[str, str | bool] = {}
 
         for zone_id, tla in enumerate(match.teams):
             if tla:
-                form['tla_{}'.format(zone_id)] = tla
-                form['disqualified_{}'.format(zone_id)] = False
-                form['present_{}'.format(zone_id)] = False
+                form[f'tla_{zone_id}'] = tla
+                form[f'disqualified_{zone_id}'] = False
+                form[f'present_{zone_id}'] = False
 
-            form['tokens_{}'.format(zone_id)] = ''
+            form[f'tokens_{zone_id}'] = ''
 
         form['tokens'] = ''
 
         return form
 
 
-def load_converter(compstate_path: Path) -> Type[Converter]:
+def load_converter(compstate_path: Path) -> type[Converter]:
     """
     Load the score converter module from Compstate repo.
 

@@ -1,10 +1,11 @@
+from __future__ import annotations
+
 import collections
 import contextlib
 import io
 import itertools
 import os
 from datetime import datetime
-from typing import Optional
 
 import dateutil.tz
 import flask
@@ -21,7 +22,7 @@ app.debug = True
 class CompstateTemplateLoader:
     def __init__(self, app: flask.Flask) -> None:
         self.app = app
-        self._loader = None  # type: Optional[jinja2.BaseLoader]
+        self._loader: jinja2.BaseLoader | None = None
 
     @property
     def loader(self) -> jinja2.BaseLoader:
@@ -187,7 +188,7 @@ def update(arena, num):
     if flask.request.method == 'GET':
         try:
             score = compstate.load_score(match)
-        except IOError:
+        except OSError:
             flask.request.form = converter.match_to_form(match)
         else:
             flask.request.form = converter.score_to_form(score)
