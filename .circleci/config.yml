@@ -1,0 +1,163 @@
+version: 2.1
+
+references:
+  build-docs-checksum-file: &build-docs-checksum-file
+    run:
+      name: Build docs checksum file
+      command: |
+        declare -a FILES=(
+          "docs/requirements.txt"
+        )
+        for f in ${FILES[@]}
+        do
+          echo "# $f" >> docs-requirements.txt
+          cat $f >> docs-requirements.txt
+        done
+
+        echo "# self" >> docs-requirements.txt
+        echo "." >> docs-requirements.txt
+
+        declare -a FILES=(
+          "setup.py"
+          ".circleci/requirements.txt"
+          "docs-requirements.txt"
+        )
+        python3 --version >> .docs-checksum
+        for f in ${FILES[@]}
+        do
+          echo "# $f" >> .docs-checksum
+          cat $f >> .docs-checksum
+        done
+  restore-docs-dependencies-cache: &restore-docs-dependencies-cache
+    restore_cache:
+      keys:
+        - deps-docs-4-py<< parameters.version >>-{{ checksum ".docs-checksum" }}
+  install-docs-dependencies: &install-docs-dependencies
+    run:
+      name: Install Dependencies
+      command: |
+        python3 -m venv venv
+        venv/bin/pip install -r .circleci/requirements.txt
+        venv/bin/pip install -r docs-requirements.txt
+  save-docs-dependencies-cache: &save-docs-dependencies-cache
+    save_cache:
+      key: deps-docs-4-py<< parameters.version >>-{{ checksum ".docs-checksum" }}
+      paths:
+        - venv
+  build-checksum-file: &build-checksum-file
+    run:
+      name: Build checksum file
+      command: |
+        declare -a FILES=(
+          "script/docs/requirements.txt"
+          "script/linting/requirements.txt"
+        )
+        for f in ${FILES[@]}
+        do
+          echo "# $f" >> all-requirements.txt
+          cat $f >> all-requirements.txt
+        done
+
+        echo "# self" >> all-requirements.txt
+        echo "." >> all-requirements.txt
+
+        declare -a FILES=(
+          "setup.py"
+          ".circleci/requirements.txt"
+          "all-requirements.txt"
+        )
+        python3 --version >> .checksum
+        for f in ${FILES[@]}
+        do
+          echo "# $f" >> .checksum
+          cat $f >> .checksum
+        done
+  restore-dependencies-cache: &restore-dependencies-cache
+    restore_cache:
+      keys:
+        - deps-4-py<< parameters.version >>-{{ checksum ".checksum" }}
+  install-dependencies: &install-dependencies
+    run:
+      name: Install Dependencies
+      command: |
+        python3 -m venv venv
+        venv/bin/pip install -r .circleci/requirements.txt
+        venv/bin/pip install -r all-requirements.txt
+  save-dependencies-cache: &save-dependencies-cache
+    save_cache:
+      key: deps-4-py<< parameters.version >>-{{ checksum ".checksum" }}
+      paths:
+        - venv
+  parametrised-python-executor: &parametrised-python-executor
+    parameters:
+      version:
+        type: string
+    executor:
+      name: python
+      version: << parameters.version >>
+  python-full-version-matrix: &python-full-version-matrix
+    matrix:
+      parameters:
+        version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+  python-top-and-bottom-version-matrix: &python-top-and-bottom-version-matrix
+    matrix:
+      parameters:
+        version: ["3.7", "3.11"]
+
+
+executors:
+  python:
+    parameters:
+      version:
+        type: string
+    docker:
+      - image: cimg/python:<< parameters.version >>
+
+
+jobs:
+  docs:
+    <<: *parametrised-python-executor
+
+    steps:
+      - checkout
+
+      - *build-docs-checksum-file
+      - *restore-docs-dependencies-cache
+      - *install-docs-dependencies
+      - *save-docs-dependencies-cache
+
+      - run:
+          name: Build the docs
+          command: |
+            source venv/bin/activate
+            ./script/docs/build.sh
+
+  lint:
+    <<: *parametrised-python-executor
+
+    steps:
+      - checkout
+
+      - *build-checksum-file
+      - *restore-dependencies-cache
+      - *install-dependencies
+      - *save-dependencies-cache
+
+      - run:
+          name: Run Flake8
+          command: |
+            source venv/bin/activate
+            # Ignore TODOs on CI, for now, even though we do want them
+            # highlighted in development.
+            ./script/linting/lint --extend-ignore=T000
+
+
+workflows:
+  version: 2.1
+
+  validate:
+    jobs:
+      - docs:
+          <<: *python-top-and-bottom-version-matrix
+      - lint:
+          <<: *python-top-and-bottom-version-matrix
