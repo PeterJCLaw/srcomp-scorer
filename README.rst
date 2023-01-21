@@ -34,8 +34,8 @@ Development
 Developers may wish to use the `SRComp Dev`_ repo to setup a dev instance.
 
 
-.. |Build Status| image:: https://travis-ci.org/PeterJCLaw/srcomp-scorer.png?branch=master
-   :target: https://travis-ci.org/PeterJCLaw/srcomp-scorer
+.. |Build Status| image:: https://circleci.com/gh/PeterJCLaw/srcomp-scorer.png?branch=main
+   :target: https://circleci.com/gh/PeterJCLaw/srcomp-scorer
 
 .. |Docs Status| image:: https://readthedocs.org/projects/srcomp-scorer/badge/?version=latest
    :target: https://srcomp-scorer.readthedocs.org/
