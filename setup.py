@@ -19,9 +19,6 @@ setup(
         'sr.comp >=1.2, <2',
     ],
     python_requires='>=3.7',
-    setup_requires=[
-        'Sphinx >=1.3, <5',
-    ],
     classifiers=[
         'Intended Audience :: Information Technology',
         'Operating System :: OS Independent',
