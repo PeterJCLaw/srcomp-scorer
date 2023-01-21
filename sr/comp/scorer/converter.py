@@ -112,5 +112,5 @@ def load_converter(compstate_path: Path) -> type[Converter]:
 
     sys.path = saved_path
 
-    converter = imported_library.Converter  # type: ignore[attr-defined]
+    converter = imported_library.Converter
     return cast(Type[Converter], converter)

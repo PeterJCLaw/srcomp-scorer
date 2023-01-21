@@ -40,7 +40,7 @@ class CompstateTemplateLoader:
         return self.loader.list_templates()
 
 
-app.jinja_loader = jinja2.ChoiceLoader([  # type: ignore
+app.jinja_loader = jinja2.ChoiceLoader([  # type: ignore[assignment]
     app.jinja_loader,
     CompstateTemplateLoader(app),
 ])
