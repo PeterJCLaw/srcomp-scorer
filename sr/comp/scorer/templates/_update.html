@@ -79,7 +79,7 @@
 
         <form method="POST">
             {% block form_content %}
-                <svg xmlns="http://www.w3.org/2000/svg" height="600" width="600" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <svg xmlns="http://www.w3.org/2000/svg" {% block svg_size %}height="600" width="600"{% endblock %} version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
                     {% block background %}
                         <rect height="600" width="600" stroke="#000" y="0" x="0" stroke-width="2" fill="#f4f3ff"/>
                         <path d="M300 0 V 600" stroke="#000" stroke-width="1"/>
