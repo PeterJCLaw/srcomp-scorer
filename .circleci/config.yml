@@ -152,6 +152,28 @@ jobs:
             # highlighted in development.
             ./script/linting/lint --extend-ignore=T000
 
+  test:
+    <<: *parametrised-python-executor
+
+    steps:
+      - checkout
+
+      - run:
+          name: Checkout submodules
+          command: |
+            git submodule update --init --recursive
+
+      - *build-checksum-file
+      - *restore-dependencies-cache
+      - *install-dependencies
+      - *save-dependencies-cache
+
+      - run:
+          name: Run Tests
+          command: |
+            source venv/bin/activate
+            ./run-tests
+
   typecheck:
     <<: *parametrised-python-executor
 
@@ -179,5 +201,7 @@ workflows:
           <<: *python-top-and-bottom-version-matrix
       - lint:
           <<: *python-top-and-bottom-version-matrix
+      - test:
+          <<: *python-full-version-matrix
       - typecheck:
           <<: *python-top-and-bottom-version-matrix
