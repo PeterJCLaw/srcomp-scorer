@@ -65,6 +65,11 @@ a:hover {
     text-decoration: underline;
 }
 
+/* Need to allow overflow so that browsers' highlighting of the current element is visible */
+foreignObject {
+    overflow: visible;
+}
+
 input[type=checkbox],
 input[type=text],
 input[type=number],
