@@ -6,7 +6,7 @@ with open('README.rst') as f:
 setup(
     name='sr.comp.scorer',
     version='1.2.0',
-    packages=find_namespace_packages(),
+    packages=find_namespace_packages(include=['sr.*']),
     namespace_packages=['sr', 'sr.comp'],
     description="Student Robotics Competition Score Entry Application",
     long_description=long_description,
