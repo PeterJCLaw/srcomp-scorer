@@ -55,7 +55,7 @@ def grouper(iterable, n, fillvalue=None):
     ['ABC', 'DEF', 'Gxx']
     """
     args = [iter(iterable)] * n
-    return itertools.zip_longest(fillvalue=fillvalue, *args)
+    return itertools.zip_longest(*args, fillvalue=fillvalue)
 
 
 @app.template_filter()
