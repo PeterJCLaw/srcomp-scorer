@@ -16,7 +16,9 @@ class Converter:
 
     def form_team_to_score(self, form, zone_id):
         """
-        Prepare the part of the score dict for the given zone from the form data.
+        Prepare a team's scoring data for saving in a score dict.
+
+        This is given a zone as form data is all keyed by zone.
         """
         return {
             'zone': zone_id,
