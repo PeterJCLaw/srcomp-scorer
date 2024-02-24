@@ -91,7 +91,7 @@ class Converter:
 
             form[f'tokens_{zone_id}'] = ''
 
-        form['tokens'] = ''
+        form['tokens_other'] = ''
 
         return form
 
