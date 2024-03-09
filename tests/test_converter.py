@@ -4,11 +4,11 @@ import datetime
 import unittest
 from typing import Sequence, Union
 
-from dateutil.tz import UTC
-
 from sr.comp.match_period import Match, MatchType
 from sr.comp.scorer.converter import Converter
 from sr.comp.types import ArenaName, MatchNumber, TLA
+
+UTC = datetime.timezone.utc
 
 
 # Copied from srcomp's factories.
