@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import copy
-import imp
+import runpy
 import sys
 from pathlib import Path
 from typing import cast, NewType, Type, Union
@@ -126,23 +126,23 @@ class Converter:
         return form
 
 
-def load_converter(compstate_path: Path) -> type[Converter]:
+def load_converter(root: Path) -> type[Converter]:
     """
     Load the score converter module from Compstate repo.
 
-    :param Path compstate_path: The path to the compstate repo.
+    :param Path root: The path to the compstate repo.
     """
 
     # Deep path hacks
-    score_directory = compstate_path / 'scoring'
+    score_directory = root / 'scoring'
     converter_source = score_directory / 'converter.py'
 
     saved_path = copy.copy(sys.path)
-    sys.path.append(str(score_directory))
+    sys.path.insert(0, str(score_directory))
 
-    imported_library = imp.load_source('converter.py', str(converter_source))
+    try:
+        converter = runpy.run_path(str(converter_source))
+    finally:
+        sys.path = saved_path
 
-    sys.path = saved_path
-
-    converter = imported_library.Converter
-    return cast(Type[Converter], converter)
+    return cast(Type[Converter], converter['Converter'])
