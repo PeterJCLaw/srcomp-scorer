@@ -6,8 +6,7 @@ python3 -m venv $HOME/srcomp-venv
 
 MY_DIR=$(dirname $0)
 
-pip install -r $MY_DIR/requirements.txt
-pip install -e $MY_DIR/..
+pip install -e $MY_DIR/..[deploy]
 
 cp $MY_DIR/run-scorer.sh $HOME
 

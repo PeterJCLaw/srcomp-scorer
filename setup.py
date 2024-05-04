@@ -18,6 +18,12 @@ setup(
         'Flask >=1.0, <4',
         'sr.comp >=1.2, <2',
     ],
+    extras_require={
+        # When deploying at an event, libproton is very useful as it allows
+        # running compstate scoring of match files standalone (i.e: outside
+        # srcomp).
+        'deploy': ['libproton'],
+    },
     python_requires='>=3.9',
     classifiers=[
         'Intended Audience :: Information Technology',
