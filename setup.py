@@ -6,6 +6,10 @@ with open('README.rst') as f:
 setup(
     name='sr.comp.scorer',
     version='1.3.0',
+    project_urls={
+        'Code': 'https://github.com/PeterJCLaw/srcomp-scorer',
+        'Issue tracker': 'https://github.com/PeterJCLaw/srcomp-scorer/issues',
+    },
     packages=find_namespace_packages(include=['sr.*']),
     namespace_packages=['sr', 'sr.comp'],
     description="Student Robotics Competition Score Entry Application",
