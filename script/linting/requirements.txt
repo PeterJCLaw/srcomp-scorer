@@ -1,10 +1,12 @@
 flake8>=5
-flake8-builtins
+flake8-balanced-wrapping
 flake8-bugbear
+flake8-builtins
 flake8-commas
 flake8-comprehensions
 flake8-debugger
 flake8-isort
+flake8-leading-blank-lines
 flake8-todo
 flake8-tuple
 

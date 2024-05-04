@@ -1,21 +1,20 @@
 import os
 import sys
 
-
 sys.path.insert(0, os.path.abspath('..'))
 
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
-    'sphinx.ext.napoleon'
+    'sphinx.ext.napoleon',
 ]
 
 source_suffix = '.rst'
 master_doc = 'index'
 
 project = 'sr.comp.scorer'
-copyright = '2015, Student Robotics'
+copyright = '2015, Student Robotics'  # noqa: A001
 
 release = '1.0.0'
 version = '1.0.0'
