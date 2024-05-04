@@ -25,7 +25,6 @@ Development
 
 .. code:: shell
 
-    pip install git+https://github.com/PeterJCLaw/srcomp
     pip install -e .
 
 **Run**:
