@@ -104,6 +104,12 @@ references:
     matrix:
       parameters:
         version: ["3.9", "3.11"]
+  filter-tags: &filter-tags
+    filters:
+      branches:
+        ignore: /.*/
+      tags:
+        only: /^v.*/
 
 
 executors:
@@ -191,6 +197,26 @@ jobs:
             source venv/bin/activate
             ./script/typing/check
 
+  release:
+    docker:
+      - image: cimg/python:3.11
+    steps:
+      - checkout
+
+      - run:
+          name: Setup virtualenv
+          command: |
+            python3 -m venv venv
+            venv/bin/pip install -r script/release/requirements.txt
+
+      - run:
+          name: Push to PyPI
+          command: |
+            source venv/bin/activate
+            export TWINE_USERNAME=__token__
+            export TWINE_PASSWORD=$PYPI_TOKEN
+            ./script/release/release
+
 
 workflows:
   version: 2.1
@@ -205,3 +231,25 @@ workflows:
           <<: *python-full-version-matrix
       - typecheck:
           <<: *python-top-and-bottom-version-matrix
+
+  release:
+    jobs:
+      - docs:
+          <<: *python-top-and-bottom-version-matrix
+          <<: *filter-tags
+      - lint:
+          <<: *python-top-and-bottom-version-matrix
+          <<: *filter-tags
+      - test:
+          <<: *python-full-version-matrix
+          <<: *filter-tags
+      - typecheck:
+          <<: *python-top-and-bottom-version-matrix
+          <<: *filter-tags
+      - release:
+          <<: *filter-tags
+          requires:
+            - docs
+            - test
+            - lint
+            - typecheck
