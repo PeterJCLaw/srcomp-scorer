@@ -15,6 +15,25 @@ InputForm = NewType('InputForm', dict[str, str])
 OutputForm = NewType('OutputForm', dict[str, Union[str, bool, int, None]])
 
 
+def render_int(value: int | None) -> int | None:
+    """
+    Process a maybe missing integer value towards a canonical display form.
+    """
+    if not value:
+        # Display zeros as empty inputs
+        return None
+    return value
+
+
+def parse_int(value: str | None) -> int:
+    """
+    Parse a maybe missing integer value towards an integer.
+    """
+    if value is None or value == '':
+        return 0
+    return int(value)
+
+
 class Converter:
     """
     Base class for converting between representations of a match's score.
