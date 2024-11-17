@@ -40,6 +40,18 @@ class CompstateTemplateLoader:
         return self.loader.list_templates()
 
 
+class CompstateError(Exception):
+    ignorable: bool
+
+
+class CompstateLoadError(CompstateError):
+    ignorable = False
+
+
+class CompstateValidationError(CompstateError):
+    ignorable = True
+
+
 app.jinja_loader = jinja2.ChoiceLoader([
     app.jinja_loader,
     CompstateTemplateLoader(app),
@@ -105,7 +117,7 @@ def update_and_validate(compstate, match, score, force):
         # SRComp sometimes throws generic Exceptions. We have to reset the repo
         # because if SRComp fails to instantiate, it would break everything!
         compstate.reset_hard()
-        raise RuntimeError(e)
+        raise CompstateLoadError(e)
     else:
         if not force:
             # TODO Update SRComp to return the error messages.
@@ -113,7 +125,7 @@ def update_and_validate(compstate, match, score, force):
                 num_errors = validate(comp)
 
             if num_errors:
-                raise RuntimeError(new_stderr.getvalue())
+                raise CompstateValidationError(new_stderr.getvalue())
 
 
 def commit_and_push(compstate, match):
@@ -207,10 +219,12 @@ def update(arena, num):
             compstate.reset_and_fast_forward()
             update_and_validate(compstate, match, score, force)
             commit_and_push(compstate, match)
-        except RuntimeError as e:
+        # RawCompstate operations may throw RuntimeError; they're not ignorable
+        except (RuntimeError, CompstateError) as e:
             return flask.render_template(
                 'update.html',
                 error=str(e) or repr(e),
+                exception=e,
                 **template_settings,
             )
         else:

@@ -143,7 +143,9 @@
                 <h1>Validation Error!</h1>
                 <pre>{{ error }}</pre>
                 <button data-action="hide">Correct problems</button>
-                <button data-action="force">Save anyway</button>
+                {% if exception.ignorable %}
+                    <button data-action="force">Save anyway</button>
+                {% endif %}
             </div>
         </aside>
     {% elif done %}
