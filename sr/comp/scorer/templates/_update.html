@@ -208,7 +208,8 @@
                 validate_token_input(input);
             };
             var validate_token_input = function(input) {
-                if (input.value.match(valid_token_regex)) {
+                var valid_regex = input.pattern || valid_token_regex;
+                if (input.value.match(valid_regex)) {
                     input.className = '';
                 } else {
                     input.className = 'invalid';
