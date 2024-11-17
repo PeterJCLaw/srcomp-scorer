@@ -5,7 +5,7 @@ with open('README.rst') as f:
 
 setup(
     name='sr.comp.scorer',
-    version='1.6.0',
+    version='1.7.0',
     project_urls={
         'Code': 'https://github.com/PeterJCLaw/srcomp-scorer',
         'Issue tracker': 'https://github.com/PeterJCLaw/srcomp-scorer/issues',
