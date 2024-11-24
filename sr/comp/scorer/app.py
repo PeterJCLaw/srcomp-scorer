@@ -5,15 +5,24 @@ import contextlib
 import io
 import itertools
 import os
+from collections.abc import Hashable
 from datetime import datetime
+from typing import Iterable, Mapping, TypeVar
 
 import dateutil.tz
 import flask
 import jinja2
 
+from sr.comp.comp import SRComp
+from sr.comp.match_period import Match
 from sr.comp.raw_compstate import RawCompstate
-from sr.comp.scorer.converter import load_converter
+from sr.comp.scorer.converter import InputForm, load_converter
+from sr.comp.types import ArenaName, MatchNumber, ScoreData
 from sr.comp.validation import validate
+
+TKey = TypeVar('TKey', bound=Hashable)
+TValue = TypeVar('TValue')
+
 
 app = flask.Flask('sr.comp.scorer')
 app.debug = True
@@ -71,17 +80,20 @@ def grouper(iterable, n, fillvalue=None):
 
 
 @app.template_filter()
-def empty_if_none(string):
+def empty_if_none(string: str | None) -> str:
     return string if string is not None else ''
 
 
 @app.template_global()
-def parse_hex_colour(string):
+def parse_hex_colour(string: str) -> tuple[int, int, int]:
     string = string.strip('#')
     return int(string[:2], 16), int(string[2:4], 16), int(string[4:], 16)
 
 
-def group_list_dict(matches, keys):
+def group_list_dict(
+    matches: Iterable[Mapping[TKey, TValue] | None],
+    keys: Iterable[TKey],
+) -> dict[TKey, list[TValue]]:
     """
     Group a list of dictionaries into a dictionary of lists.
 
@@ -90,6 +102,7 @@ def group_list_dict(matches, keys):
     into
         {'A': [a, a2], 'B': [b, b2]}
     """
+    target: dict[TKey, list[TValue]]
     target = collections.OrderedDict((key, []) for key in keys)
     for entry in matches:
         if entry is None:
@@ -100,12 +113,17 @@ def group_list_dict(matches, keys):
 
 
 @app.template_global()
-def is_match_done(match):
+def is_match_done(match: Match) -> bool:
     path = flask.g.compstate.get_score_path(match)
     return os.path.exists(path)
 
 
-def update_and_validate(compstate, match, score, force):
+def update_and_validate(
+    compstate: RawCompstate,
+    match: Match,
+    score: ScoreData,
+    force: bool,
+) -> None:
     compstate.save_score(match, score)
 
     path = compstate.get_score_path(match)
@@ -128,7 +146,7 @@ def update_and_validate(compstate, match, score, force):
                 raise CompstateValidationError(new_stderr.getvalue())
 
 
-def commit_and_push(compstate, match):
+def commit_and_push(compstate: RawCompstate, match: Match) -> None:
     commit_msg = "Update {} scores for match {} in arena {}".format(
         match.type.value,
         match.num,
@@ -139,7 +157,7 @@ def commit_and_push(compstate, match):
 
 
 @app.before_request
-def before_request():
+def before_request() -> flask.typing.ResponseReturnValue | None:
     cs_path = os.path.realpath(app.config['COMPSTATE'])
     local_only = app.config['COMPSTATE_LOCAL']
     flask.g.compstate = RawCompstate(cs_path, local_only)
@@ -148,7 +166,7 @@ def before_request():
         correct_username = app.config['AUTH_USERNAME']
         correct_password = app.config['AUTH_PASSWORD']
     except KeyError:
-        return  # no authentication configured
+        return None  # no authentication configured
 
     auth = flask.request.authorization
     if (
@@ -160,10 +178,13 @@ def before_request():
             'WWW-Authenticate': 'Basic realm="Authentication required."',
         })
 
+    return None
+
 
 @app.route('/')
-def index():
-    comp = flask.g.compstate.load()
+def index() -> flask.typing.ResponseReturnValue:
+    comp: SRComp = flask.g.compstate.load()
+    all_matches: dict[ArenaName, list[Match]]
     all_matches = group_list_dict(comp.schedule.matches, comp.arenas.keys())
     now = datetime.now(dateutil.tz.tzlocal())
     current_matches = {
@@ -179,14 +200,14 @@ def index():
 
 
 @app.route('/<arena>/<int:num>', methods=['GET', 'POST'])
-def update(arena, num):
-    compstate = flask.g.compstate
+def update(arena: ArenaName, num: MatchNumber) -> flask.typing.ResponseReturnValue:
+    compstate: RawCompstate = flask.g.compstate
     comp = compstate.load()
 
     converter = load_converter(comp.root)()
 
     try:
-        match = comp.schedule.matches[num][arena]
+        match: Match = comp.schedule.matches[num][arena]
     except (IndexError, KeyError):
         flask.abort(404)
 
@@ -201,12 +222,12 @@ def update(arena, num):
         try:
             score = compstate.load_score(match)
         except OSError:
-            flask.request.form = converter.match_to_form(match)
+            flask.request.form = converter.match_to_form(match)  # type: ignore[assignment]
         else:
-            flask.request.form = converter.score_to_form(score)
+            flask.request.form = converter.score_to_form(score)  # type: ignore[assignment]
     elif flask.request.method == 'POST':
         try:
-            score = converter.form_to_score(match, flask.request.form)
+            score = converter.form_to_score(match, InputForm(flask.request.form))
         except ValueError as e:
             return flask.render_template(
                 'update.html',
@@ -239,5 +260,5 @@ def update(arena, num):
 
 
 @app.errorhandler(404)
-def page_not_found(e):
+def page_not_found(e: object) -> flask.typing.ResponseReturnValue:
     return flask.render_template('404.html'), 404

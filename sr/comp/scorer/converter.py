@@ -4,14 +4,14 @@ import copy
 import runpy
 import sys
 from pathlib import Path
-from typing import cast, NewType, Type, Union
+from typing import cast, Mapping, NewType, Type, Union
 
 from sr.comp.match_period import Match
 from sr.comp.types import ScoreArenaZonesData, ScoreData, ScoreTeamData, TLA
 
 ZoneId = int
 Zone = Union[int, str]
-InputForm = NewType('InputForm', dict[str, str])
+InputForm = NewType('InputForm', Mapping[str, str])
 OutputForm = NewType('OutputForm', dict[str, Union[str, bool, int, None]])
 
 
