@@ -7,7 +7,7 @@ import itertools
 import os
 from collections.abc import Hashable
 from datetime import datetime
-from typing import Iterable, Mapping, TypeVar
+from typing import Iterable, Mapping, overload, TypeVar
 
 import dateutil.tz
 import flask
@@ -20,6 +20,7 @@ from sr.comp.scorer.converter import InputForm, load_converter
 from sr.comp.types import ArenaName, MatchNumber, ScoreData
 from sr.comp.validation import validate
 
+T = TypeVar('T')
 TKey = TypeVar('TKey', bound=Hashable)
 TValue = TypeVar('TValue')
 
@@ -42,10 +43,10 @@ class CompstateTemplateLoader:
             ))
         return self._loader
 
-    def get_source(self, environment, template):
+    def get_source(self, environment, template):  # type: ignore[no-untyped-def]
         return self.loader.get_source(environment, template)
 
-    def list_templates(self):
+    def list_templates(self):  # type: ignore[no-untyped-def]
         return self.loader.list_templates()
 
 
@@ -67,8 +68,22 @@ app.jinja_loader = jinja2.ChoiceLoader([
 ])
 
 
+@overload
+def grouper(iterable: Iterable[T], n: int, fillvalue: T) -> Iterable[Iterable[T]]:
+    ...
+
+
+@overload
+def grouper(iterable: Iterable[T], n: int) -> Iterable[Iterable[T | None]]:
+    ...
+
+
 @app.template_global()
-def grouper(iterable, n, fillvalue=None):
+def grouper(
+    iterable: Iterable[T],
+    n: int,
+    fillvalue: T | None = None,
+) -> Iterable[Iterable[T | None]]:
     """
     Collect data into fixed-length chunks or blocks.
 
