@@ -11,6 +11,7 @@ setup(
         'Issue tracker': 'https://github.com/PeterJCLaw/srcomp-scorer/issues',
     },
     packages=find_namespace_packages(include=['sr.*']),
+    package_data={'sr.comp.scorer': ['py.typed']},
     namespace_packages=['sr', 'sr.comp'],
     description="Student Robotics Competition Score Entry Application",
     long_description=long_description,
