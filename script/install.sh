@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 python3 -m venv $HOME/srcomp-venv
 
 . $HOME/srcomp-venv/bin/activate
