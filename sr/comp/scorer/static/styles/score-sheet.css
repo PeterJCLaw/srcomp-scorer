@@ -42,6 +42,10 @@
     letter-spacing: initial;
 }
 
+.score-sheet svg input[type="text"].ok {
+    background-color: #e5fdff;
+}
+
 .score-sheet svg input[type="text"].invalid {
     background-color: #F75D59;
 }

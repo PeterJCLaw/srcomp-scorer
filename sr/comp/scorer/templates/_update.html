@@ -212,7 +212,11 @@
             var validate_token_input = function(input) {
                 var valid_regex = input.pattern || valid_token_regex;
                 if (input.value.match(valid_regex)) {
-                    input.className = '';
+                    if (input.value) {
+                        input.className = 'ok';
+                    } else {
+                        input.className = 'empty';
+                    }
                 } else {
                     input.className = 'invalid';
                 }
