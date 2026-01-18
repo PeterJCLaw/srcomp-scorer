@@ -3,5 +3,4 @@ mypy>=0.940
 
 types-Flask; python_version < '3.8'
 types-Jinja2
-types-python-dateutil
 types-setuptools

@@ -6,10 +6,8 @@ import io
 import itertools
 import os
 from collections.abc import Hashable
-from datetime import datetime
 from typing import Iterable, Mapping, overload, TypeVar
 
-import dateutil.tz
 import flask
 import jinja2
 
@@ -201,15 +199,9 @@ def index() -> flask.typing.ResponseReturnValue:
     comp: SRComp = flask.g.compstate.load()
     all_matches: dict[ArenaName, list[Match]]
     all_matches = group_list_dict(comp.schedule.matches, comp.arenas.keys())
-    now = datetime.now(dateutil.tz.tzlocal())
-    current_matches = {
-        match.arena: match
-        for match in comp.schedule.matches_at(now)
-    }
     return flask.render_template(
         'index.html',
         all_matches=all_matches,
-        current_matches=current_matches,
         arenas=comp.arenas.values(),
     )
 

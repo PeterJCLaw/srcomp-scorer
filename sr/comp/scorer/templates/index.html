@@ -8,15 +8,11 @@
     <p>Select a match to enter scores.</p>
 {% endblock %}
 
-{% macro match_cell(match, colspan=1, current_match=False) %}
+{% macro match_cell(match, colspan=1) %}
     <td colspan="{{ colspan }}">
         {% if match is not none %}
             <a href="{{ url_for('.update', arena=match['arena'], num=match['num']) }}" class="{{ 'done' if is_match_done(match) else '' }}">
-                {% if current_match %}
-                    Current Match {{ match['num'] }} — <em>{{ match['teams'] | join(', ') }}</em>
-                {% else %}
-                    {{ '{0:03d}'.format(match['num']) }}
-                {% endif %}
+                {{ '{0:03d}'.format(match['num']) }}
             </a>
         {% endif %}
     </td>
@@ -31,14 +27,6 @@
     >
         <tr>
             <th colspan="{{ width }}">Arena {{ arena.display_name }}</th>
-        </tr>
-
-        <tr>
-            {% if arena in current_matches %}
-                {{ match_cell(current_matches[arena], colspan=width, current_match=True) }}
-            {% else %}
-                <td colspan="{{ width }}"></td>
-            {% endif %}
         </tr>
 
         {% for match_group in grouper(matches, width) %}
